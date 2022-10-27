@@ -10,52 +10,6 @@ def standardize(x):
     return (x - x.mean()) / x.std()
 
 
-def robust_linear_regression():
-    
-    with pm.Model() as model:
-        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
-        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
-        mu = beta0 + beta1*x
-
-        sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu = pm.Exponential('nu', 1/29.0)
-
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
-
-        idata = pm.sample(return_inferencedata=True)
-    
-    return idata
-
-
-def hierarchical_regression():  
-    with pm.Model() as model:
-        # Hyperpriors
-        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
-        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
-        sigma0 = pm.Uniform('sigma0', 10**-3, 10**3)
-        sigma1 = pm.Uniform('sigma1', 10**-3, 10**3)
-
-        # The below parameterization resulted in a lot of divergences.
-        #beta0_s = pm.Normal('beta0_s', mu=beta0, sd=sigma0, shape=n_subj)
-        #beta1_s = pm.Normal('beta1_s', mu=beta1, sd=sigma1, shape=n_subj)
-        
-        beta0_s_offset = pm.Normal('beta0_s_offset', mu=0, sd=1, shape=n_subj)
-        beta0_s = pm.Deterministic('beta0_s', beta0 + beta0_s_offset * sigma0)
-
-        beta1_s_offset = pm.Normal('beta1_s_offset', mu=0, sd=1, shape=n_subj)
-        beta1_s = pm.Deterministic('beta1_s', beta1 + beta1_s_offset * sigma1)
-
-        mu =  beta0_s[subj_idx] + beta1_s[subj_idx] * zx3
-
-        sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu = pm.Exponential('nu', 1/29.)
-
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy3)  
-        
-        # Sample from posterior
-        idata = pm.sample(return_inferencedata=True)
-
-        
 def compare_one_group(y, group=None, n_samples=1000):
     
     # Check to see if group variable was passed. If so, then this means the goal is to compare
@@ -84,7 +38,7 @@ def compare_one_group(y, group=None, n_samples=1000):
     return idata
 
 
-def compare_two_groups(y, group, sigma_low, sigma_high, n_samples=1000):
+def compare_two_groups(y, group, sigma_low, sigma_high, n_draws=1000):
     
     # Convert grouping variable to categorical dtype if it is not already
     if pd.api.types.is_categorical_dtype(group):
@@ -137,7 +91,57 @@ def compare_two_groups(y, group, sigma_low, sigma_high, n_samples=1000):
         )
         
         # Sample from posterior
-        idata = pm.sample(return_inferencedata=True)
+        idata = pm.sample(draws=n_draws, return_inferencedata=True)
         
+    return model, idata
+
+
+def robust_linear_regression():
+    
+    with pm.Model() as model:
+        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
+        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
+        mu = beta0 + beta1*x
+
+        sigma = pm.Uniform('sigma', 10**-3, 10**3)
+        nu = pm.Exponential('nu', 1/29.0)
+
+        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
+
+        idata = pm.sample(return_inferencedata=True)
+    
     return idata
+
+
+def hierarchical_regression():  
+    
+    with pm.Model() as model:
+        # Hyperpriors
+        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
+        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
+        sigma0 = pm.Uniform('sigma0', 10**-3, 10**3)
+        sigma1 = pm.Uniform('sigma1', 10**-3, 10**3)
+
+        # The below parameterization resulted in a lot of divergences.
+        #beta0_s = pm.Normal('beta0_s', mu=beta0, sd=sigma0, shape=n_subj)
+        #beta1_s = pm.Normal('beta1_s', mu=beta1, sd=sigma1, shape=n_subj)
+        
+        beta0_s_offset = pm.Normal('beta0_s_offset', mu=0, sd=1, shape=n_subj)
+        beta0_s = pm.Deterministic('beta0_s', beta0 + beta0_s_offset * sigma0)
+
+        beta1_s_offset = pm.Normal('beta1_s_offset', mu=0, sd=1, shape=n_subj)
+        beta1_s = pm.Deterministic('beta1_s', beta1 + beta1_s_offset * sigma1)
+
+        mu =  beta0_s[subj_idx] + beta1_s[subj_idx] * zx3
+
+        sigma = pm.Uniform('sigma', 10**-3, 10**3)
+        nu = pm.Exponential('nu', 1/29.)
+
+        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy3)  
+        
+        # Sample from posterior
+        idata = pm.sample(return_inferencedata=True)
+
+        
+
     
