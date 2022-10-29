@@ -8,7 +8,7 @@ import seaborn as sns
 def standardize(x):
     """Standardizes the input variable.
     
-    Arguments:
+    Args:
         x (ndarray/Series): the variable to standardize 
     
     Returns:
@@ -18,32 +18,45 @@ def standardize(x):
     return (x - x.mean()) / x.std()
 
 
-def compare_one_group(y, group=None, n_samples=1000):
+def BEST_paired(y1, y2=None, n_samples=1000):
+    """BEST procedure on single sample or paired samples. 
     
-    # Check to see if group variable was passed. If so, then this means the goal is to compare
-    # difference scores on a within subjects variable (e.g., time). Otherwise, we are comparing 
-    # location parameter to zero.
-    if group is None:
+    Args: 
+        y1 (ndarray/Series): Either single sample or difference scores. 
+        y2 (ndarray/Series): (Optional) If provided, represents the paired 
+          sample (i.e., y2 elements are in same order as y1).
+    Returns: 
+        PyMC Model and InferenceData objects.
+    """
+    
+    # Check to see if block variable was passed. If so, then this means the
+    # goal is to compare difference scores on a within subjects variable 
+    # (e.g., block). Otherwise, we are comparing location parameter to zero.
+    if y2 is None:
         pass
     else:
-        group = group.astype('category')
-        level = group.cat.categories
-        assert len(level) == 2, f"Expected two groups but got {len(level)}"
-        y = y[group==level[1]].to_numpy() - y[group==level[0]].to_numpy()
+        assert len(y1) == len(y2), f"There must be equal numbers of observations."
+        # Convert pre and post to difference scores.
+        y = y1 - y2
     
+    # Calculate pooled empirical mean and SD of data to scale hyperparameters
+    mu_y = y.mean()
+    sigma_y = y.std()
+                                                                     
     with pm.Model() as model:
-        # Set priors
-        mu = pm.Normal('mu', mu=y.mean(), sd=y.std()*100)
-        sigma = pm.Uniform('sigma', y.std()/1000, y.std()*1000)
-        nu_minus1 = pm.Exponential('nu_minus_one', 1/29)
+        # Define priors
+        mu = pm.Normal('mu', mu=mu_y, sd=sigma_y * 10)
+        sigma = pm.Uniform('sigma', sigma_y / 10, sigma_y * 10)
+        nu_minus1 = pm.Exponential('nu_minus_one', 1 / 29)
         nu = pm.Deterministic('nu', nu_minus1 + 1)
-
-        like = pm.StudentT('like', nu, mu, sd=sigma, observed=y)
+        
+        # Define likelihood
+        likelihood = pm.StudentT('likelihood', nu=nu, mu=mu, sigma=sigma, observed=y)
 
         # Sample from posterior
-        idata = pm.sample(return_inferencedata=True)
+        idata = pm.sample(draws=n_draws)
         
-    return idata
+    return model, idata
 
 
 def BEST(y, group, n_draws=1000):
@@ -51,9 +64,10 @@ def BEST(y, group, n_draws=1000):
     
     Compares outcomes from two groups and estimates parameters.
     
-    Arguments:
+    Args:
         y (ndarray/Series): The metric outcome variable.
         group: The grouping variable providing that indexes into y.
+        n_draws: Number of random samples to draw from the posterior.
     
     Returns: 
         PyMC Model and InferenceData objects.
@@ -96,13 +110,9 @@ def BEST(y, group, n_draws=1000):
         nu = pm.Deterministic("nu", nu_minus_one + 1)
         nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
-        # Need to convert SD to precision for model
-        lambda_1 = group1_std**-2
-        lambda_2 = group2_std**-2
-        
         # Define likelihood
-        likelihood1 = pm.StudentT("group1", nu=nu, mu=group1_mean, lam=lambda_1, observed=y_group1)
-        likelihood2 = pm.StudentT("group2", nu=nu, mu=group2_mean, lam=lambda_2, observed=y_group2)
+        likelihood1 = pm.StudentT("group1", nu=nu, mu=group1_mean, sigma=group1_std, observed=y_group1)
+        likelihood2 = pm.StudentT("group2", nu=nu, mu=group2_mean, sigma=group2_std, observed=y_group2)
         
         # Contrasts of interest
         diff_of_means = pm.Deterministic("difference of means", group1_mean - group2_mean)
@@ -117,25 +127,114 @@ def BEST(y, group, n_draws=1000):
     return model, idata
 
 
-def robust_linear_regression(n_draws=1000):
+def BEST_copy(y, group, n_draws=1000):
+    """Implementation of John Kruschke's BEST test.
     
+    Compares outcomes from two groups and estimates parameters. This version
+    uses smarter indexing than original. 
+    
+    Args:
+        y (ndarray/Series): The metric outcome variable.
+        group: The grouping variable providing that indexes into y.
+        n_draws: Number of random samples to draw from the posterior.
+    
+    Returns: 
+        PyMC Model and InferenceData objects.
+    """
+    
+    # Convert grouping variable to categorical dtype if it is not already
+    if pd.api.types.is_categorical_dtype(group):
+        pass
+    else:
+        group = group.astype('category')
+    group_idx = group.cat.codes.values
+        
+    # Extract group levels and make sure there are only two
+    level = group.cat.categories
+    assert len(level) == 2, f"Expected two groups but got {len(level)}."
+    
+    # Calculate pooled empirical mean and SD of data to scale hyperparameters
+    mu_y = y.mean()
+    sigma_y = y.std()
+                                                                     
+    with pm.Model() as model:
+        # Define priors. Arbitrarily set hyperparameters to the pooled 
+        # empirical mean of data and twice pooled empirical SD, which 
+        # applies very diffuse and unbiased info to these quantities. 
+        group_mean = pm.Normal("group_mean", mu=mu_y, sigma=sigma_y * 2, shape=len(level))
+        group_std = pm.Uniform("group_std", lower=sigma_y / 10, upper=sigma_y * 10, shape=len(level))
+        
+        # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition of 1 is to shift the
+        # distribution so that the range of possible values of nu are 1 to infinity (with mean of 30).
+        nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
+        nu = pm.Deterministic("nu", nu_minus_one + 1)
+        nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
+        
+        # Define likelihood
+        likelihood = pm.StudentT("group1", nu=nu, mu=group_mean[group_idx], sigma=group_std[group_idx], observed=y)
+        
+        # Contrasts of interest
+        diff_of_means = pm.Deterministic("difference of means", group_mean[0] - group_mean[1])
+        diff_of_stds = pm.Deterministic("difference of stds", group_std[0] - group_std[1])
+        effect_size = pm.Deterministic(
+            "effect size", diff_of_means / np.sqrt((group_std[0]**2 + group_std[1]**2) / 2)
+        )
+        
+        # Sample from posterior
+        idata = pm.sample(draws=n_draws)
+        
+    return model, idata
+
+
+def robust_linear_regression(x, y, n_draws=1000):
+    """Perform a robust linear regression with one predictor.
+    
+    Args:
+        x (ndarray): The standardized predictor (independent) variable.
+        y (ndarray): The standardized outcome (dependent) variable.
+        n_draws: Number of random samples to draw from the posterior.
+    Returns: 
+        PyMC Model and InferenceData objects.
+    """
+    
+    assert (x.mean() == 0) & (x.std() == 1), f"Inputs must be standardized."
+    assert (y.mean() == 0) & (x.std() == 1), f"Inputs must be standardized."
+
     with pm.Model() as model:
         # Define priors
-        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
-        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
-        mu = beta0 + beta1*x
-
+        beta0 = pm.Normal('beta0', mu=0, sigma=2)
+        beta1 = pm.Normal('beta1', mu=0, sigma=2)
+        
         sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu = pm.Exponential('nu', 1/29.0)
+        nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29.0)
+        nu = pm.Deterministic("nu", nu_minus_one + 1)
+        
+        mu = beta0 + beta1 * x
 
+        # Define likelihood 
         likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
-
+        
+        # Sample from posterior
         idata = pm.sample(draws=n_draws)
     
-    return idata
+    return model, idata
 
 
-def hierarchical_regression():  
+def linreg_return_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
+    """Convert parameters back to raw scale of data.
+    
+    Args:
+    
+    Returns:
+    
+    """
+    beta0 = zeta0*sigma_y + mu_y - zeta1*mu_x*sigma_y/sigma_x
+    beta1 = zeta1*sigma_y/sigma_x
+    
+    return beta0, beta1
+
+
+def hierarchical_regression(x, y, subj):  
     
     with pm.Model() as model:
         # Hyperpriors
@@ -144,10 +243,12 @@ def hierarchical_regression():
         sigma0 = pm.Uniform('sigma0', 10**-3, 10**3)
         sigma1 = pm.Uniform('sigma1', 10**-3, 10**3)
 
-        # The below parameterization resulted in a lot of divergences.
+        # The intuitive parameterization results in a lot of divergences.
         #beta0_s = pm.Normal('beta0_s', mu=beta0, sd=sigma0, shape=n_subj)
         #beta1_s = pm.Normal('beta1_s', mu=beta1, sd=sigma1, shape=n_subj)
         
+        # See: http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/
+        # for rationale of following reparameterization
         beta0_s_offset = pm.Normal('beta0_s_offset', mu=0, sd=1, shape=n_subj)
         beta0_s = pm.Deterministic('beta0_s', beta0 + beta0_s_offset * sigma0)
 
@@ -165,5 +266,6 @@ def hierarchical_regression():
         idata = pm.sample(return_inferencedata=True)
 
         
+
 
     
