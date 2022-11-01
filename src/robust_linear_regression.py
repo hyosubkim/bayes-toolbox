@@ -11,7 +11,6 @@ def robust_linear_regression(x, y, n_draws=1000):
     """
     
     # Make sure variables are standardized (within reasonable precision). 
-     f"x must be standardized."
     assert (is_standardized(x)) & (is_standardized(y)), f"Inputs must be standardized."
 
     with pm.Model() as model:

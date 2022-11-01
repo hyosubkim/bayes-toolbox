@@ -10,8 +10,11 @@ def multiple_linear_regression(X, y, n_draws=1000):
     """
     
     # Standardize both predictor and outcome variables.
-    X_s = standardize(X)
-    y_s = standardize(y)
+    if (is_standardized(X)) & (is_standardized(y)):
+        pass
+    else:
+        X_s = standardize(X)
+        y_s = standardize(y)
     
     # For explanation of how predictor variables are handled, see:
     # https://www.pymc.io/projects/docs/en/stable/learn/core_notebooks/pymc_overview.html

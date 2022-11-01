@@ -172,7 +172,7 @@ def BEST_copy(y, group, n_draws=1000):
         nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
         # Define likelihood
-        likelihood = pm.StudentT("group1", nu=nu, mu=group_mean[group_idx], sigma=group_std[group_idx], observed=y)
+        likelihood = pm.StudentT("likelihood", nu=nu, mu=group_mean[group_idx], sigma=group_std[group_idx], observed=y)
         
         # Contrasts of interest
         diff_of_means = pm.Deterministic("difference of means", group_mean[0] - group_mean[1])
