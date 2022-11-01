@@ -1,3 +1,4 @@
+import aesara.tensor as at
 import arviz as az
 import numpy as np
 import pandas as pd
@@ -9,10 +10,10 @@ def standardize(x):
     """Standardizes the input variable.
     
     Args:
-        x (ndarray/Series): the variable to standardize 
+        x (ndarray/Series): The variable to standardize. 
     
     Returns:
-        ndarray/Series: the standardized version of the input variable x
+        ndarray/Series: the standardized version of the input variable x.
     """
         
     return (x - x.mean()) / x.std()
@@ -196,9 +197,10 @@ def robust_linear_regression(x, y, n_draws=1000):
     Returns: 
         PyMC Model and InferenceData objects.
     """
-    
-    assert (x.mean() == 0) & (x.std() == 1), f"Inputs must be standardized."
-    assert (y.mean() == 0) & (x.std() == 1), f"Inputs must be standardized."
+    # Make sure variables are standardized (within reasonable precision). 
+    eps = 0.0001  
+    assert (x.mean()**2 < eps) & ((x.std() - 1)**2 < eps), f"x must be standardized."
+    assert (y.mean()**2 < eps) & ((y.std() - 1)**2 < eps), f"y must be standardized."
 
     with pm.Model() as model:
         # Define priors
@@ -220,7 +222,7 @@ def robust_linear_regression(x, y, n_draws=1000):
     return model, idata
 
 
-def linreg_return_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
+def linreg_revert_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
     """Convert parameters back to raw scale of data.
     
     Args:
@@ -235,6 +237,18 @@ def linreg_return_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
 
 
 def hierarchical_regression(x, y, subj):  
+    """
+    
+    """
+    
+    # Convert subject variable to categorical dtype if it is not already
+    if pd.api.types.is_categorical_dtype(subj):
+        pass
+    else:
+        subj = subj.astype('category')
+    subj_idx = subj.cat.codes.values
+    subj_levels = subj.cat.categories
+    n_subj = len(subj_levels)
     
     with pm.Model() as model:
         # Hyperpriors
@@ -263,9 +277,58 @@ def hierarchical_regression(x, y, subj):
         likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy3)  
         
         # Sample from posterior
-        idata = pm.sample(return_inferencedata=True)
+        idata = pm.sample(draws=n_draws)
+        
+        return model, idata
 
+    
+def is_standardized(x, eps=0.0001):
+    """Checks to see if variable is standardized (i.e., N(0, 1)).
+    
+    Args: 
+        x: Random variable.
+        eps: Some small value to represent tolerance level.
+    
+    Returns:
+        Bool
+    """
+    
+    return (x.mean()**2 < eps) & ((x.std() - 1)**2 < eps)
         
 
+def multiple_linear_regression(X, y, n_draws=1000):
+    """Perform a Bayesian multiple linear regression.
+    
+    Args:
+        X (dataframe): Predictor variables are in different columns.
+        y (ndarray/Series): The outcome variable.
+        
+    Returns:
+    
+    """
+    
+    # Standardize both predictor and outcome variables.
+    X_s = standardize(X)
+    y_s = standardize(y)
+    
+    # For explanation of how predictor variables are handled, see:
+    # https://www.pymc.io/projects/docs/en/stable/learn/core_notebooks/pymc_overview.html
+    with pm.Model(coords={"predictors": X.columns.values}) as model:
+        # Define priors
+        beta0 = pm.Normal("beta0", mu=0, sd=2)
+        beta = pm.Normal("beta", mu=0, sd=2, dims="predictors")
 
+        nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
+        nu = pm.Exponential("nu", nu_minus_one + 1)
+        
+        mu = beta0 + pm.math.dot(X, beta)
+        sigma = pm.Uniform("sigma", 10**-5, 10)
+        
+        # Define likelihood
+        likelihood = pm.StudentT("likelihood", nu=nu, mu=mu, lam=1/sigma**2, observed=y_s)
+    
+        # Sample the posterior
+        idata = pm.sample(draws=n_draws)
+        
+        return model, idata
     

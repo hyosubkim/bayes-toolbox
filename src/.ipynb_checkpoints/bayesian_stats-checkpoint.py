@@ -1,3 +1,4 @@
+import aesara.tensor as at
 import arviz as az
 import numpy as np
 import pandas as pd
@@ -9,10 +10,10 @@ def standardize(x):
     """Standardizes the input variable.
     
     Args:
-        x (ndarray/Series): the variable to standardize 
+        x (ndarray/Series): The variable to standardize. 
     
     Returns:
-        ndarray/Series: the standardized version of the input variable x
+        ndarray/Series: the standardized version of the input variable x.
     """
         
     return (x - x.mean()) / x.std()
@@ -127,58 +128,11 @@ def BEST(y, group, n_draws=1000):
     return model, idata
 
 
-def robust_linear_regression(n_draws=1000):
-    
-    with pm.Model() as model:
-        # Define priors
-        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
-        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
-        mu = beta0 + beta1*x
-
-        sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu = pm.Exponential('nu', 1/29.0)
-
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
-
-        idata = pm.sample(draws=n_draws)
-    
-    return idata
-
-
-def hierarchical_regression():  
-    
-    with pm.Model() as model:
-        # Hyperpriors
-        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
-        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
-        sigma0 = pm.Uniform('sigma0', 10**-3, 10**3)
-        sigma1 = pm.Uniform('sigma1', 10**-3, 10**3)
-
-        # The below parameterization resulted in a lot of divergences.
-        #beta0_s = pm.Normal('beta0_s', mu=beta0, sd=sigma0, shape=n_subj)
-        #beta1_s = pm.Normal('beta1_s', mu=beta1, sd=sigma1, shape=n_subj)
-        
-        beta0_s_offset = pm.Normal('beta0_s_offset', mu=0, sd=1, shape=n_subj)
-        beta0_s = pm.Deterministic('beta0_s', beta0 + beta0_s_offset * sigma0)
-
-        beta1_s_offset = pm.Normal('beta1_s_offset', mu=0, sd=1, shape=n_subj)
-        beta1_s = pm.Deterministic('beta1_s', beta1 + beta1_s_offset * sigma1)
-
-        mu =  beta0_s[subj_idx] + beta1_s[subj_idx] * zx3
-
-        sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu = pm.Exponential('nu', 1/29.)
-
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy3)  
-        
-        # Sample from posterior
-        idata = pm.sample(return_inferencedata=True)
-
-        
 def BEST_copy(y, group, n_draws=1000):
     """Implementation of John Kruschke's BEST test.
     
-    Compares outcomes from two groups and estimates parameters.
+    Compares outcomes from two groups and estimates parameters. This version
+    uses smarter indexing than original. 
     
     Args:
         y (ndarray/Series): The metric outcome variable.
@@ -200,26 +154,16 @@ def BEST_copy(y, group, n_draws=1000):
     level = group.cat.categories
     assert len(level) == 2, f"Expected two groups but got {len(level)}."
     
-    # Split observations by group
-    y_group1 = y[group==level[0]]
-    y_group2 = y[group==level[1]]
-    
     # Calculate pooled empirical mean and SD of data to scale hyperparameters
     mu_y = y.mean()
     sigma_y = y.std()
-    
-    # Arbitrarily set hyperparameters to the pooled empirical mean of data and 
-    # twice pooled empirical SD, which applies very diffuse info to these 
-    # quantities and does not favor one or the other a priori
-    mu_m = mu_y
-    mu_s = sigma_y * 2
                                                                      
     with pm.Model() as model:
-        # Define priors
-        group_mean = pm.Normal("group_mean", mu=mu_m, sigma=mu_s, shape=len(level))
-        # group2_mean = pm.Normal("group2_mean", mu=mu_m, sigma=mu_s)
+        # Define priors. Arbitrarily set hyperparameters to the pooled 
+        # empirical mean of data and twice pooled empirical SD, which 
+        # applies very diffuse and unbiased info to these quantities. 
+        group_mean = pm.Normal("group_mean", mu=mu_y, sigma=sigma_y * 2, shape=len(level))
         group_std = pm.Uniform("group_std", lower=sigma_y / 10, upper=sigma_y * 10, shape=len(level))
-        # group2_std = pm.Uniform("group2_std", lower=sigma_y / 10, upper=sigma_y * 10)
         
         # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition of 1 is to shift the
         # distribution so that the range of possible values of nu are 1 to infinity (with mean of 30).
@@ -229,7 +173,6 @@ def BEST_copy(y, group, n_draws=1000):
         
         # Define likelihood
         likelihood = pm.StudentT("group1", nu=nu, mu=group_mean[group_idx], sigma=group_std[group_idx], observed=y)
-        # likelihood2 = pm.StudentT("group2", nu=nu, mu=group2_mean, sigma=group2_std, observed=y_group2)
         
         # Contrasts of interest
         diff_of_means = pm.Deterministic("difference of means", group_mean[0] - group_mean[1])
@@ -242,5 +185,116 @@ def BEST_copy(y, group, n_draws=1000):
         idata = pm.sample(draws=n_draws)
         
     return model, idata
+
+
+def robust_linear_regression(x, y, n_draws=1000):
+    """Perform a robust linear regression with one predictor.
+    
+    Args:
+        x (ndarray): The standardized predictor (independent) variable.
+        y (ndarray): The standardized outcome (dependent) variable.
+        n_draws: Number of random samples to draw from the posterior.
+    Returns: 
+        PyMC Model and InferenceData objects.
+    """
+    # Make sure variables are standardized (within reasonable precision). 
+    eps = 0.0001  
+    assert (x.mean()**2 < eps) & ((x.std() - 1)**2 < eps), f"x must be standardized."
+    assert (y.mean()**2 < eps) & ((y.std() - 1)**2 < eps), f"y must be standardized."
+
+    with pm.Model() as model:
+        # Define priors
+        beta0 = pm.Normal('beta0', mu=0, sigma=2)
+        beta1 = pm.Normal('beta1', mu=0, sigma=2)
+        
+        sigma = pm.Uniform('sigma', 10**-3, 10**3)
+        nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29.0)
+        nu = pm.Deterministic("nu", nu_minus_one + 1)
+        
+        mu = beta0 + beta1 * x
+
+        # Define likelihood 
+        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
+        
+        # Sample from posterior
+        idata = pm.sample(draws=n_draws)
+    
+    return model, idata
+
+
+def linreg_revert_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
+    """Convert parameters back to raw scale of data.
+    
+    Args:
+    
+    Returns:
+    
+    """
+    beta0 = zeta0*sigma_y + mu_y - zeta1*mu_x*sigma_y/sigma_x
+    beta1 = zeta1*sigma_y/sigma_x
+    
+    return beta0, beta1
+
+
+def hierarchical_regression(x, y, subj):  
+    """
+    
+    """
+    
+    # Convert subject variable to categorical dtype if it is not already
+    if pd.api.types.is_categorical_dtype(subj):
+        pass
+    else:
+        subj = subj.astype('category')
+    subj_idx = subj.cat.codes.values
+    subj_levels = subj.cat.categories
+    n_subj = len(subj_levels)
+    
+    with pm.Model() as model:
+        # Hyperpriors
+        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
+        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
+        sigma0 = pm.Uniform('sigma0', 10**-3, 10**3)
+        sigma1 = pm.Uniform('sigma1', 10**-3, 10**3)
+
+        # The intuitive parameterization results in a lot of divergences.
+        #beta0_s = pm.Normal('beta0_s', mu=beta0, sd=sigma0, shape=n_subj)
+        #beta1_s = pm.Normal('beta1_s', mu=beta1, sd=sigma1, shape=n_subj)
+        
+        # See: http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/
+        # for rationale of following reparameterization
+        beta0_s_offset = pm.Normal('beta0_s_offset', mu=0, sd=1, shape=n_subj)
+        beta0_s = pm.Deterministic('beta0_s', beta0 + beta0_s_offset * sigma0)
+
+        beta1_s_offset = pm.Normal('beta1_s_offset', mu=0, sd=1, shape=n_subj)
+        beta1_s = pm.Deterministic('beta1_s', beta1 + beta1_s_offset * sigma1)
+
+        mu =  beta0_s[subj_idx] + beta1_s[subj_idx] * zx3
+
+        sigma = pm.Uniform('sigma', 10**-3, 10**3)
+        nu = pm.Exponential('nu', 1/29.)
+
+        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy3)  
+        
+        # Sample from posterior
+        idata = pm.sample(draws=n_draws)
+        
+        return model, idata
+
+    
+def is_standardized(x, eps=0.0001):
+    """Checks to see if variable is standardized (i.e., N(0, 1)).
+    
+    Args: 
+        x: Random variable.
+        eps: Some small value to represent tolerance level.
+    
+    Returns:
+        Bool
+    """
+    
+    return (x.mean()**2 < eps) & ((x.std() - 1)**2 < eps)
+        
+
 
     
