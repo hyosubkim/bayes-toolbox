@@ -13,6 +13,7 @@ def standardize(X):
         mu_X = X.mean().values
         sigma_X = X.std().values
         X_s = ((X - mu_X) / sigma_X)
-        return X_s
+        return X_s, mu_X, sigma_X
     else:
-        return (X - X.mean()) / X.std()
+        X_s = (X - X.mean()) / X.std()
+        return X_s, X.mean(), X.std()

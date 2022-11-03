@@ -6,17 +6,26 @@ import pymc as pm
 import seaborn as sns
 
 
-def standardize(x):
+def standardize(X):
     """Standardizes the input variable.
     
     Args:
-        x (ndarray/Series): The variable to standardize. 
+        X (ndarray/Series/DataFrame): The variable(s) to standardize. 
     
     Returns:
-        ndarray/Series: the standardized version of the input variable x.
+        ndarray/Series/DataFrame: The standardized version of the input X.
     """
-        
-    return (x - x.mean()) / x.std()
+    
+    # Check if X is a dataframe, in which case it will be handled differently. 
+    if isinstance(X, pd.DataFrame):
+        mu_X = X.mean().values
+        sigma_X = X.std().values
+        X_s = ((X - mu_X) / sigma_X)
+        return X_s, mu_X, sigma_X
+    else:
+        X_s = (X - X.mean()) / X.std()
+        return X_s, X.mean(), X.std()
+
 
 
 def BEST_paired(y1, y2=None, n_samples=1000):
@@ -222,18 +231,36 @@ def robust_linear_regression(x, y, n_draws=1000):
     return model, idata
 
 
-def linreg_revert_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
+def revert_linreg_params_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
     """Convert parameters back to raw scale of data.
     
+    Function takes in parameter values from PyMC InferenceData and returns
+    them in original scale of raw data. 
+    
     Args:
-    
+        zeta0 (): Intercept for standardized data.
+        zeta1 (PyMC trace): Slope for standardized data.
+        mu_y (scalar): Mean of outcome variable.
+        sigma_x (scalar): SD of predictor variable.
+        sigma_y (scalar): SD of outcome variable.
+        
     Returns:
-    
+        ndarrays
     """
+    
     beta0 = zeta0*sigma_y + mu_y - zeta1*mu_x*sigma_y/sigma_x
     beta1 = zeta1*sigma_y/sigma_x
     
     return beta0, beta1
+
+
+def revert_multiple_linreg_parameters_raw_scale(zeta0, zeta, mu_X, mu_y, sigma, sigma_X, sigma_y):
+    
+    beta0 = zeta0 * sigma_y + mu_y - np.sum(zeta * mu_X / sigma_X, axis=1) * sigma_y
+    beta = (zeta / sigma_X) * sigma_y
+    sigma = (sigma * sigma_y)
+    
+    return beta0, beta, sigma
 
 
 def hierarchical_regression(x, y, subj):  
@@ -282,7 +309,7 @@ def hierarchical_regression(x, y, subj):
         return model, idata
 
     
-def is_standardized(x, eps=0.0001):
+def is_standardized(X, eps=0.0001):
     """Checks to see if variable is standardized (i.e., N(0, 1)).
     
     Args: 
@@ -293,7 +320,15 @@ def is_standardized(x, eps=0.0001):
         Bool
     """
     
-    return (x.mean()**2 < eps) & ((x.std() - 1)**2 < eps)
+    if isinstance(X, pd.DataFrame):
+        mu_X = X.mean().values
+        sigma_X = X.std().values
+        X_s = ((X - mu_X) / sigma_X)
+        return np.equal((mu_X**2 < eps).sum() + ((sigma_X - 1)**2 < eps).sum(),
+                        len(mu_X) + len(sigma_X))
+    else:
+        return (X.mean()**2 < eps) & ((X.std() - 1)**2 < eps)
+
         
 
 def multiple_linear_regression(X, y, n_draws=1000):
@@ -308,15 +343,18 @@ def multiple_linear_regression(X, y, n_draws=1000):
     """
     
     # Standardize both predictor and outcome variables.
-    X_s = standardize(X)
-    y_s = standardize(y)
+    if (is_standardized(X)) & (is_standardized(y)):
+        pass
+    else:
+        X, _, _ = standardize(X)
+        y, _, _ = standardize(y)
     
     # For explanation of how predictor variables are handled, see:
     # https://www.pymc.io/projects/docs/en/stable/learn/core_notebooks/pymc_overview.html
     with pm.Model(coords={"predictors": X.columns.values}) as model:
         # Define priors
-        beta0 = pm.Normal("beta0", mu=0, sd=2)
-        beta = pm.Normal("beta", mu=0, sd=2, dims="predictors")
+        beta0 = pm.Normal("beta0", mu=0, sigma=2)
+        beta = pm.Normal("beta", mu=0, sigma=2, dims="predictors")
 
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
         nu = pm.Exponential("nu", nu_minus_one + 1)
@@ -325,10 +363,9 @@ def multiple_linear_regression(X, y, n_draws=1000):
         sigma = pm.Uniform("sigma", 10**-5, 10)
         
         # Define likelihood
-        likelihood = pm.StudentT("likelihood", nu=nu, mu=mu, lam=1/sigma**2, observed=y_s)
+        likelihood = pm.StudentT("likelihood", nu=nu, mu=mu, lam=1/sigma**2, observed=y)
     
         # Sample the posterior
         idata = pm.sample(draws=n_draws)
         
         return model, idata
-    

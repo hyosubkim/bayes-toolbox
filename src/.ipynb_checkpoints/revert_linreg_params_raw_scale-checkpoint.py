@@ -1,4 +1,4 @@
-def linreg_revert_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
+def revert_linreg_params_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
     """Convert parameters back to raw scale of data.
     
     Function takes in parameter values from PyMC InferenceData and returns
