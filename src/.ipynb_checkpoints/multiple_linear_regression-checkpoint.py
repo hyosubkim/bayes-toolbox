@@ -25,6 +25,7 @@ def multiple_linear_regression(X, y, n_draws=1000):
 
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
         nu = pm.Exponential("nu", nu_minus_one + 1)
+        nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
         mu = beta0 + pm.math.dot(X, beta)
         sigma = pm.Uniform("sigma", 10**-5, 10)

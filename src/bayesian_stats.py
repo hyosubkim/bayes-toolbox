@@ -254,10 +254,29 @@ def revert_linreg_params_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
     return beta0, beta1
 
 
-def revert_multiple_linreg_parameters_raw_scale(zeta0, zeta, mu_X, mu_y, sigma, sigma_X, sigma_y):
+def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, mu_X, mu_y, sigma, sigma_X, sigma_y):
+    """Rescale standardized coefficients to magnitudes on raw scale.
     
-    beta0 = zeta0 * sigma_y + mu_y - np.sum(zeta * mu_X / sigma_X, axis=1) * sigma_y
-    beta = (zeta / sigma_X) * sigma_y
+    If the posterior samples come from multiple chains, they should be combined
+    and the zbetas should have dimensionality of (predictors, draws). 
+    
+    Args:
+        zbeta0: Standardized intercept.
+        zbeta: Standardized multiple regression coefficients for predictor
+                variables.
+        mu_X: Mean of predictor variables.
+        mu_y: Mean of outcome variable.
+        sigma: SD of likelihood on standardized scale.
+        sigma_X: SD of predictor variables.
+        sigma_y: SD of outcome variable.
+        
+    Returns:
+    
+    """
+    # beta0 will turn out to be 1d bc we are broadcasting, and Numpy's sum 
+    # reduces the axis over which summation occurs.
+    beta0 = zbeta0 * sigma_y + mu_y - np.sum(zbeta.T * mu_X / sigma_X, axis=1) * sigma_y
+    beta = (zbeta.T / sigma_X) * sigma_y
     sigma = (sigma * sigma_y)
     
     return beta0, beta, sigma
@@ -358,6 +377,7 @@ def multiple_linear_regression(X, y, n_draws=1000):
 
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
         nu = pm.Exponential("nu", nu_minus_one + 1)
+        nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
         mu = beta0 + pm.math.dot(X, beta)
         sigma = pm.Uniform("sigma", 10**-5, 10)
