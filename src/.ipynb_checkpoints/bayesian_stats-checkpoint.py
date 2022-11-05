@@ -203,13 +203,13 @@ def robust_linear_regression(x, y, n_draws=1000):
         x (ndarray): The standardized predictor (independent) variable.
         y (ndarray): The standardized outcome (dependent) variable.
         n_draws: Number of random samples to draw from the posterior.
+        
     Returns: 
         PyMC Model and InferenceData objects.
     """
+    
     # Make sure variables are standardized (within reasonable precision). 
-    eps = 0.0001  
-    assert (x.mean()**2 < eps) & ((x.std() - 1)**2 < eps), f"x must be standardized."
-    assert (y.mean()**2 < eps) & ((y.std() - 1)**2 < eps), f"y must be standardized."
+    assert (is_standardized(x)) & (is_standardized(y)), f"Inputs must be standardized."
 
     with pm.Model() as model:
         # Define priors
@@ -219,11 +219,12 @@ def robust_linear_regression(x, y, n_draws=1000):
         sigma = pm.Uniform('sigma', 10**-3, 10**3)
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29.0)
         nu = pm.Deterministic("nu", nu_minus_one + 1)
+        nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
         mu = beta0 + beta1 * x
 
         # Define likelihood 
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
+        likelihood = pm.StudentT('likelihood', nu=nu, mu=mu, sigma=sigma, observed=y)
         
         # Sample from posterior
         idata = pm.sample(draws=n_draws)
@@ -231,7 +232,7 @@ def robust_linear_regression(x, y, n_draws=1000):
     return model, idata
 
 
-def revert_linreg_params_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
+def unstandardize_linreg_parameters(zeta0, zeta1, mu_x, mu_y, sigma, sigma_x, sigma_y):
     """Convert parameters back to raw scale of data.
     
     Function takes in parameter values from PyMC InferenceData and returns
@@ -250,8 +251,9 @@ def revert_linreg_params_raw_scale(zeta0, zeta1, mu_y, sigma_x, sigma_y):
     
     beta0 = zeta0*sigma_y + mu_y - zeta1*mu_x*sigma_y/sigma_x
     beta1 = zeta1*sigma_y/sigma_x
-    
-    return beta0, beta1
+    sigma = (sigma * sigma_y)
+   
+    return beta0, beta1, sigma
 
 
 def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, mu_X, mu_y, sigma, sigma_X, sigma_y):

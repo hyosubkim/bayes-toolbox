@@ -21,11 +21,12 @@ def robust_linear_regression(x, y, n_draws=1000):
         sigma = pm.Uniform('sigma', 10**-3, 10**3)
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29.0)
         nu = pm.Deterministic("nu", nu_minus_one + 1)
+        nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
         mu = beta0 + beta1 * x
 
         # Define likelihood 
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=y)
+        likelihood = pm.StudentT('likelihood', nu=nu, mu=mu, sigma=sigma, observed=y)
         
         # Sample from posterior
         idata = pm.sample(draws=n_draws)
