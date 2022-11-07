@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pymc as pm
 import seaborn as sns
+from aesara import tensor as at
 
 
 def standardize(X):
@@ -390,4 +391,67 @@ def multiple_linear_regression(X, y, n_draws=1000):
         # Sample the posterior
         idata = pm.sample(draws=n_draws)
         
+        return model, idata
+    
+    
+def gamma_shape_rate_from_mode_sd(mode, sd):
+    """Calculate Gamma shape and rate from mode and sd.
+
+    """
+
+    rate = (mode + np.sqrt(mode**2 + 4 * sd**2 )) / (2 * sd**2)
+    shape = 1 + mode * rate
+    return shape, rate
+
+
+def parse_categorical(x):
+    """A function for extracting information from a grouping variable.
+    
+    If the input arg is not already a category-type variable, convert 
+    it to one. Then, extract the codes, unique levels, and number of 
+    levels from the variable.
+    
+    Args:
+        x (categorical): The categorical type variable to parse.
+    
+    Returns:
+        ndarrays for the values, unique level, and number of levels.
+    """
+    
+    # First, check to see if passed variable is of type "category".
+    if pd.api.types.is_categorical_dtype(x):
+        pass
+    else:
+        x = x.astype('category')
+    categorical_values = x.cat.codes.values
+    levels = x.cat.categories
+    n_levels = len(levels)
+
+    return categorical_values, levels, n_levels
+
+
+def metric_outcome_one_nominal_predictor(x, y, mu_y, sigma_y, n_draws=1000):
+    """
+    
+    """
+    x_vals, levels, n_levels = parse_categorical(x)
+    
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2, 2 * sigma_y)
+    
+    with pm.Model() as model:
+        # 'a' indicates coefficients not yet obeying sum-to-zero contraint
+        sigma_a = pm.Gamma('sigma_a', alpha=a_shape, beta=a_rate)
+        a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 5)
+        a = pm.Normal('a', 0.0, sigma=sigma_a, shape=n_levels)
+
+        sigma_y = pm.Uniform('sigma_y', sigma_y / 100, sigma_y * 10)
+        likelihood = pm.Normal('likelihood', a0 + a[x_vals], sigma=sigma_y, observed=y)
+
+        # Convert a0, a to sum-to-zero b0,b 
+        m = pm.Deterministic('m', a0 + a)
+        b0 = pm.Deterministic('b0', at.mean(m))
+        b = pm.Deterministic('b', m - b0) 
+        
+        idata = pm.sample(draws=n_draws)
+
         return model, idata
