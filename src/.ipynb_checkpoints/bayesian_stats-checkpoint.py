@@ -455,3 +455,66 @@ def metric_outcome_one_nominal_predictor(x, y, mu_y, sigma_y, n_draws=1000):
         idata = pm.sample(draws=n_draws)
 
         return model, idata
+    
+    
+def metric_outcome_one_nominal_one_metric_predictor(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma_y, n_draws=1000):
+    """
+
+    """
+    x_vals, levels, n_levels = parse_categorical(x)
+
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2, 2 * sigma_y)
+
+    with pm.Model(coords={"groups": levels}) as model:
+        # 'a' indicates coefficients not yet obeying sum-to-zero contraint
+        sigma_a = pm.Gamma('sigma_a', alpha=a_shape, beta=a_rate)
+        a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 5)
+        a = pm.Normal('a', 0.0, sigma=sigma_a, dims="groups")
+        a_met = pm.Normal("a_met", mu=0, sigma=2 * sigma_y / sigma_x_met)
+        # Note that in Warmhoven notebook he uses SD of residuals to set
+        # lower bound on sigma_y
+        sigma_y = pm.Uniform('sigma_y', sigma_y / 100, sigma_y * 10)
+        mu = a0 + a[x_vals] + a_met * (x_met - mu_x_met)
+        likelihood = pm.Normal('likelihood', mu=mu, sigma=sigma_y, observed=y)
+
+        # Convert a0, a to sum-to-zero b0, b 
+        b0 = pm.Deterministic('b0', a0 + at.mean(a) + a_met * (-mu_x_met))
+        b = pm.Deterministic('b', a - at.mean(a)) 
+
+        idata = pm.sample(draws=n_draws)
+
+        return model, idata
+    
+    
+def robust_anova(x, y, mu_y, sigma_y, n_draws=1000):
+    """
+    
+    """
+    x_vals, levels, n_levels = parse_categorical(x)
+    
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2, 2 * sigma_y)
+    
+    with pm.Model(coords={"groups": levels}) as model:
+        # 'a' indicates coefficients not yet obeying sum-to-zero contraint
+        sigma_a = pm.Gamma('sigma_a', alpha=a_shape, beta=a_rate)
+        a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 10)
+        a = pm.Normal('a', 0.0, sigma=sigma_a, dims="groups")
+        # Hyperparameters 
+        sigma_y_sd = pm.Gamma('sigma_y_sd', alpha=a_shape, beta=a_rate)
+        sigma_y_mode = pm.Gamma("sigma_y_mode", alpha=a_shape, beta=a_rate)
+        sigma_y_rate = (sigma_y_mode + np.sqrt(sigma_y_mode**2 + 4 * sigma_y_sd**2)) / 2 * sigma_y_sd**2
+        sigma_y_shape = sigma_y_mode * sigma_y_rate
+        
+        sigma_y = pm.Gamma("sigma", alpha=sigma_y_shape, beta=sigma_y_rate, dims="groups")
+        nu_minus1 = pm.Exponential('nu_minus1', 1 / 29)
+        nu = pm.Deterministic('nu', nu_minus1 + 1)
+        likelihood = pm.Normal('likelihood', a0 + a[x_vals], sigma=sigma_y[x_vals], observed=y)
+
+        # Convert a0, a to sum-to-zero b0, b 
+        m = pm.Deterministic('m', a0 + a)
+        b0 = pm.Deterministic('b0', at.mean(m))
+        b = pm.Deterministic('b', m - b0) 
+        
+        idata = pm.sample(draws=n_draws, init='advi+adapt_diag')
+
+        return model, idata
