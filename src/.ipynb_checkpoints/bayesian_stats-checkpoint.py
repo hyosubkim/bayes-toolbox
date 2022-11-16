@@ -515,6 +515,101 @@ def robust_anova(x, y, mu_y, sigma_y, n_draws=1000):
         b0 = pm.Deterministic('b0', at.mean(m))
         b = pm.Deterministic('b', m - b0) 
         
+        # Initialization argument is necessary for sampling to converge
         idata = pm.sample(draws=n_draws, init='advi+adapt_diag')
 
         return model, idata
+    
+
+def two_factor_anova(x1, x2, y):
+    
+    mu_y = y.mean()
+    sigma_y = y.std()
+
+    x1 = df.Pos
+    x2 = df.Org
+
+    a_shape, a_rate = bst.gamma_shape_rate_from_mode_sd(sigma_y / 2 , 2 * sigma_y)
+    x1_vals, levels1, n_levels1 = bst.parse_categorical(x1)
+    x2_vals, levels2, n_levels2 = bst.parse_categorical(x2)
+
+    with pm.Model(coords={"rank": levels1, "dept": levels2}) as model:
+
+        #a0 = pm.Normal('a0', mu_y, tau=1/(sigma_y*5)**2)
+        a0_tilde = pm.Normal('a0_tilde', mu=0, sigma=1)
+        a0 = pm.Deterministic('a0', mu_y + sigma_y * 5 * a0_tilde)
+
+        sigma_a1 = pm.Gamma('sigma_a1', a_shape, a_rate)
+        #a1 = pm.Normal('a1', 0.0, tau=1/sigma_a1**2, shape=n_levels1)
+        a1_tilde = pm.Normal('a1_tilde', mu=0, sigma=1, dims="rank")
+        a1 = pm.Deterministic('a1', 0.0 + sigma_a1*a1_tilde)
+
+        sigma_a2 = pm.Gamma('sigma_a2', a_shape, a_rate)
+        #a2 = pm.Normal('a2', 0.0, tau=1/sigma_a2**2, shape=n_levels2)
+        a2_tilde = pm.Normal('a2_tilde', mu=0, sigma=1, dims="dept")
+        a2 = pm.Deterministic('a2', 0.0 + sigma_a2*a2_tilde)
+
+        sigma_a1a2 = pm.Gamma('sigma_a1a2', a_shape, a_rate)
+        #a1a2 = pm.Normal('a1a2', 0.0, 1/sigma_a1a2**2, shape=(n_levels1, n_levels2))
+        a1a2_tilde = pm.Normal('a1a2_tilde', mu=0, sigma=1, dims=("rank", "dept"))
+        a1a2 = pm.Deterministic('a1a2', 0.0 + sigma_a1a2*a1a2_tilde)
+
+        mu = a0 + a1[x1_vals] + a2[x2_vals] +a1a2[x1_vals, x2_vals]
+        sigma = pm.Uniform('sigma', sigma_y / 100, sigma_y * 10)
+
+        likelihood = pm.Normal('likelihood', mu, sigma=sigma, observed=y) 
+
+        idata = pm.sample(nuts={'target_accept': 0.95})
+
+
+def mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1000):
+
+    # Statistical model: Split-plot design after Kruschke Ch. 20
+    # Between-subjects factor (i.e., group)
+    x_between, levels_x_between, num_levels_x_between = parse_categorical(between_subj_var)
+  
+    # Within-subjects factor (i.e., target set)
+    x_within, levels_x_within, num_levels_x_within = parse_categorical(within_subj_var)
+
+    # Individual subjects
+    x_subj, levels_x_subj, num_levels_x_subj = parse_categorical(subj_id)
+
+    # Dependent varia_ble 
+    mu_y = y.mean()
+    sigma_y = y.std()
+
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2 , 2 * sigma_y)
+
+    with pm.Model(coords={
+        "between_subj": levels_x_between, 
+        "within_subj": levels_x_within,
+        "subj": levels_x_subj}
+        ) as model:
+
+        # Baseline value
+        a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 5)
+
+        # Deflection from baseline for between subjects factor
+        sigma_B = pm.Gamma('sigma_B', a_shape, a_rate)
+        aB = pm.Normal('aB', mu=0.0, sigma=sigma_B, dims="between_subj")
+
+        # Deflection from baseline for within subjects factor
+        sigma_W = pm.Gamma('sigma_W', a_shape, a_rate)
+        aW = pm.Normal('aW', mu=0.0, sigma=sigma_W, dims="within_subj")
+
+        # Deflection from baseline for combination of between and within subjects factors
+        sigma_BxW = pm.Gamma('sigma_BxW', a_shape, a_rate)
+        aBxW = pm.Normal('aBxW', mu=0.0, sigma=sigma_BxW, dims=("between_subj", "within_subj"))
+
+        # Deflection from baseline for individual subjects
+        sigma_S = pm.Gamma('sigma_S', a_shape, a_rate)
+        aS = pm.Normal('aS', mu=0.0, sigma=sigma_S, dims="subj")
+
+        mu = a0 + aB[x_between] + aW[x_within] + aBxW[x_between, x_within] + aS[x_subj] 
+        sigma = pm.Uniform('sigma', lower=sigma_y / 100, upper=sigma_y * 10)
+
+        likelihood = pm.Normal('likelihood', mu=mu, sigma=sigma, observed=y)
+
+        idata = pm.sample(draws=n_samples, target_accept=.95, tune=2000)
+    
+    return model, idata

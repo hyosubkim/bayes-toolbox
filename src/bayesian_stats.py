@@ -561,3 +561,55 @@ def two_factor_anova(x1, x2, y):
 
         idata = pm.sample(nuts={'target_accept': 0.95})
 
+
+def mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1000):
+
+    # Statistical model: Split-plot design after Kruschke Ch. 20
+    # Between-subjects factor (i.e., group)
+    x_between, levels_x_between, num_levels_x_between = parse_categorical(between_subj_var)
+  
+    # Within-subjects factor (i.e., target set)
+    x_within, levels_x_within, num_levels_x_within = parse_categorical(within_subj_var)
+
+    # Individual subjects
+    x_subj, levels_x_subj, num_levels_x_subj = parse_categorical(subj_id)
+
+    # Dependent varia_ble 
+    mu_y = y.mean()
+    sigma_y = y.std()
+
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2 , 2 * sigma_y)
+
+    with pm.Model(coords={
+        "between_subj": levels_x_between, 
+        "within_subj": levels_x_within,
+        "subj": levels_x_subj}
+        ) as model:
+
+        # Baseline value
+        a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 5)
+
+        # Deflection from baseline for between subjects factor
+        sigma_B = pm.Gamma('sigma_B', a_shape, a_rate)
+        aB = pm.Normal('aB', mu=0.0, sigma=sigma_B, dims="between_subj")
+
+        # Deflection from baseline for within subjects factor
+        sigma_W = pm.Gamma('sigma_W', a_shape, a_rate)
+        aW = pm.Normal('aW', mu=0.0, sigma=sigma_W, dims="within_subj")
+
+        # Deflection from baseline for combination of between and within subjects factors
+        sigma_BxW = pm.Gamma('sigma_BxW', a_shape, a_rate)
+        aBxW = pm.Normal('aBxW', mu=0.0, sigma=sigma_BxW, dims=("between_subj", "within_subj"))
+
+        # Deflection from baseline for individual subjects
+        sigma_S = pm.Gamma('sigma_S', a_shape, a_rate)
+        aS = pm.Normal('aS', mu=0.0, sigma=sigma_S, dims="subj")
+
+        mu = a0 + aB[x_between] + aW[x_within] + aBxW[x_between, x_within] + aS[x_subj] 
+        sigma = pm.Uniform('sigma', lower=sigma_y / 100, upper=sigma_y * 10)
+
+        likelihood = pm.Normal('likelihood', mu=mu, sigma=sigma, observed=y)
+
+        idata = pm.sample(draws=n_samples, target_accept=.95, tune=2000)
+    
+    return model, idata
