@@ -1,1 +1,1 @@
-# bayesian-stats-toolbox
+# Bayesian Statistics Toolbox
