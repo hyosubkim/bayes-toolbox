@@ -54,6 +54,27 @@ def parse_categorical(x):
     return categorical_values, levels, n_levels
 
 
+def is_standardized(X, eps=0.0001):
+    """Checks to see if variable is standardized (i.e., N(0, 1)).
+    
+    Args: 
+        x: Random variable.
+        eps: Some small value to represent tolerance level.
+    
+    Returns:
+        Bool
+    """
+    
+    if isinstance(X, pd.DataFrame):
+        mu_X = X.mean().values
+        sigma_X = X.std().values
+        X_s = ((X - mu_X) / sigma_X)
+        return np.equal((mu_X**2 < eps).sum() + ((sigma_X - 1)**2 < eps).sum(),
+                        len(mu_X) + len(sigma_X))
+    else:
+        return (X.mean()**2 < eps) & ((X.std() - 1)**2 < eps)
+
+    
 def BEST_paired(y1, y2=None, n_draws=1000):
     """BEST procedure on single sample or paired samples. 
     
@@ -295,15 +316,19 @@ def hierarchical_regression(x, y, subj):
     """
     
     """
+    zx, mu_x, sigma_x = standardize(x)
+    zy, mu_y, sigma_y = standardize(y)
     
     # Convert subject variable to categorical dtype if it is not already
-    if pd.api.types.is_categorical_dtype(subj):
-        pass
-    else:
-        subj = subj.astype('category')
-    subj_idx = subj.cat.codes.values
-    subj_levels = subj.cat.categories
-    n_subj = len(subj_levels)
+    subj_idx, subj_levels, n_subj = parse_categorical(subj)
+    
+    # if pd.api.types.is_categorical_dtype(subj):
+    #     pass
+    # else:
+    #     subj = subj.astype('category')
+    # subj_idx = subj.cat.codes.values
+    # subj_levels = subj.cat.categories
+    # n_subj = len(subj_levels)
     
     with pm.Model() as model:
         # Hyperpriors
@@ -328,8 +353,9 @@ def hierarchical_regression(x, y, subj):
 
         sigma = pm.Uniform('sigma', 10**-3, 10**3)
         nu = pm.Exponential('nu', 1/29.)
-
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy3)  
+        
+        # Define likelihood function
+        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy)  
         
         # Sample from posterior
         idata = pm.sample(draws=n_draws)
@@ -337,28 +363,6 @@ def hierarchical_regression(x, y, subj):
         return model, idata
 
     
-def is_standardized(X, eps=0.0001):
-    """Checks to see if variable is standardized (i.e., N(0, 1)).
-    
-    Args: 
-        x: Random variable.
-        eps: Some small value to represent tolerance level.
-    
-    Returns:
-        Bool
-    """
-    
-    if isinstance(X, pd.DataFrame):
-        mu_X = X.mean().values
-        sigma_X = X.std().values
-        X_s = ((X - mu_X) / sigma_X)
-        return np.equal((mu_X**2 < eps).sum() + ((sigma_X - 1)**2 < eps).sum(),
-                        len(mu_X) + len(sigma_X))
-    else:
-        return (X.mean()**2 < eps) & ((X.std() - 1)**2 < eps)
-
-        
-
 def multiple_linear_regression(X, y, n_draws=1000):
     """Perform a Bayesian multiple linear regression.
     
