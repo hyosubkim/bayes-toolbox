@@ -244,4 +244,6 @@ dependencies:
   - zipp=3.10.0=pyhd8ed1ab_0
   - zlib=1.2.13=hfd90126_4
   - zstd=1.5.2=hfa58983_4
+  - pip:
+    - watermark==2.3.1
 prefix: /Users/hyosubkim/opt/anaconda3/envs/bayes_toolbox
