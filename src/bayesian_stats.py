@@ -212,20 +212,24 @@ def robust_linear_regression(x, y, n_draws=1000):
         PyMC Model and InferenceData objects.
     """
     
-    # Make sure variables are standardized (within reasonable precision). 
-    assert (is_standardized(x)) & (is_standardized(y)), f"Inputs must be standardized."
+    # Standardize both predictor and outcome variables.
+    if (is_standardized(x)) & (is_standardized(y)):
+        pass
+    else:
+        x, _, _ = standardize(x)
+        y, _, _ = standardize(y)
 
     with pm.Model() as model:
         # Define priors
-        beta0 = pm.Normal('beta0', mu=0, sigma=2)
-        beta1 = pm.Normal('beta1', mu=0, sigma=2)
+        zbeta0 = pm.Normal('zbeta0', mu=0, sigma=2)
+        zbeta1 = pm.Normal('zbeta1', mu=0, sigma=2)
         
         sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29.0)
+        nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
         nu = pm.Deterministic("nu", nu_minus_one + 1)
         nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
-        mu = beta0 + beta1 * x
+        mu = zbeta0 + zbeta1 * x
 
         # Define likelihood 
         likelihood = pm.StudentT('likelihood', nu=nu, mu=mu, sigma=sigma, observed=y)
@@ -236,7 +240,7 @@ def robust_linear_regression(x, y, n_draws=1000):
     return model, idata
 
 
-def unstandardize_linreg_parameters(zeta0, zeta1, mu_x, mu_y, sigma, sigma_x, sigma_y):
+def unstandardize_linreg_parameters(zbeta0, zbeta1, sigma, x, y):
     """Convert parameters back to raw scale of data.
     
     Function takes in parameter values from PyMC InferenceData and returns
@@ -244,7 +248,7 @@ def unstandardize_linreg_parameters(zeta0, zeta1, mu_x, mu_y, sigma, sigma_x, si
     
     Args:
         zeta0 (): Intercept for standardized data.
-        zeta1 (PyMC trace): Slope for standardized data.
+        zeta1 (): Slope for standardized data.
         mu_y (scalar): Mean of outcome variable.
         sigma_x (scalar): SD of predictor variable.
         sigma_y (scalar): SD of outcome variable.
@@ -252,10 +256,12 @@ def unstandardize_linreg_parameters(zeta0, zeta1, mu_x, mu_y, sigma, sigma_x, si
     Returns:
         ndarrays
     """
+    _, mu_x, sigma_x = standardize(x)
+    _, mu_y, sigma_y = standardize(y)
     
-    beta0 = zeta0*sigma_y + mu_y - zeta1*mu_x*sigma_y/sigma_x
-    beta1 = zeta1*sigma_y/sigma_x
-    sigma = (sigma * sigma_y)
+    beta0 = zbeta0 * sigma_y + mu_y - zbeta1 * mu_x * sigma_y / sigma_x
+    beta1 = zbeta1 * sigma_y / sigma_x
+    sigma = sigma * sigma_y
    
     return beta0, beta1, sigma
 
