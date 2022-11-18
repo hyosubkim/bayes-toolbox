@@ -266,7 +266,7 @@ def unstandardize_linreg_parameters(zbeta0, zbeta1, sigma, x, y):
     return beta0, beta1, sigma
 
 
-def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, mu_X, mu_y, sigma, sigma_X, sigma_y):
+def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, zsigma, X, y):
     """Rescale standardized coefficients to magnitudes on raw scale.
     
     If the posterior samples come from multiple chains, they should be combined
@@ -285,11 +285,15 @@ def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, mu_X, mu_y, sigma, s
     Returns:
     
     """
+    
+    _, mu_X, sigma_X = standardize(X)
+    _, mu_y, sigma_y = standardize(y)
+    
     # beta0 will turn out to be 1d bc we are broadcasting, and Numpy's sum 
     # reduces the axis over which summation occurs.
     beta0 = zbeta0 * sigma_y + mu_y - np.sum(zbeta.T * mu_X / sigma_X, axis=1) * sigma_y
     beta = (zbeta.T / sigma_X) * sigma_y
-    sigma = (sigma * sigma_y)
+    sigma = zsigma * sigma_y
     
     return beta0, beta, sigma
 
@@ -384,18 +388,18 @@ def multiple_linear_regression(X, y, n_draws=1000):
     # https://www.pymc.io/projects/docs/en/stable/learn/core_notebooks/pymc_overview.html
     with pm.Model(coords={"predictors": X.columns.values}) as model:
         # Define priors
-        beta0 = pm.Normal("beta0", mu=0, sigma=2)
-        beta = pm.Normal("beta", mu=0, sigma=2, dims="predictors")
+        zbeta0 = pm.Normal("zbeta0", mu=0, sigma=2)
+        zbeta = pm.Normal("zbeta", mu=0, sigma=2, dims="predictors")
 
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
         nu = pm.Exponential("nu", nu_minus_one + 1)
         nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
         
-        mu = beta0 + pm.math.dot(X, beta)
-        sigma = pm.Uniform("sigma", 10**-5, 10)
+        mu = zbeta0 + pm.math.dot(X, zbeta)
+        zsigma = pm.Uniform("zsigma", 10**-5, 10)
         
         # Define likelihood
-        likelihood = pm.StudentT("likelihood", nu=nu, mu=mu, lam=1/sigma**2, observed=y)
+        likelihood = pm.StudentT("likelihood", nu=nu, mu=mu, lam=1 / zsigma**2, observed=y)
     
         # Sample the posterior
         idata = pm.sample(draws=n_draws)
