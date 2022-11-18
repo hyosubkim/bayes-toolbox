@@ -441,15 +441,18 @@ def gamma_shape_rate_from_mode_sd(mode, sd):
     return shape, rate
 
 
-def metric_outcome_one_nominal_predictor(x, y, mu_y, sigma_y, n_draws=1000):
+def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
     """
     
     """
-    x_vals, levels, n_levels = parse_categorical(x)
+ 
+    mu_y = y.mean()
+    sigma_y = y.std()
     
+    x_vals, x_levels, n_levels = parse_categorical(x)
     a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2, 2 * sigma_y)
     
-    with pm.Model(coords={"groups": levels}) as model:
+    with pm.Model(coords={"groups": x_levels}) as model:
         # 'a' indicates coefficients not yet obeying sum-to-zero contraint
         sigma_a = pm.Gamma('sigma_a', alpha=a_shape, beta=a_rate)
         a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 5)
@@ -463,12 +466,12 @@ def metric_outcome_one_nominal_predictor(x, y, mu_y, sigma_y, n_draws=1000):
         b0 = pm.Deterministic('b0', at.mean(m))
         b = pm.Deterministic('b', m - b0) 
         
-        idata = pm.sample(draws=n_draws)
+        idata = pm.sample(draws=n_draws, target_accept=acceptance_rate)
 
         return model, idata
     
     
-def metric_outcome_one_nominal_one_metric_predictor(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma_y, n_draws=1000):
+def hierarchical_bayesian_ancova(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma_y, n_draws=1000):
     """
 
     """
@@ -497,7 +500,7 @@ def metric_outcome_one_nominal_one_metric_predictor(x, x_met, y, mu_x_met, mu_y,
         return model, idata
     
     
-def robust_anova(x, y, mu_y, sigma_y, n_draws=1000):
+def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000):
     """
     
     """
