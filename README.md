@@ -1,3 +1,5 @@
+[![DOI](https://sandbox.zenodo.org/badge/553182204.svg)](https://sandbox.zenodo.org/badge/latestdoi/553182204)
+
 # Bayesian Statistics Toolbox (BST) 
 
 - What does this project do?
@@ -8,7 +10,7 @@
 - Contributions
 
 ## What is this?
-BST is a beta-version library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python.  
+BST is a beta-version library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
 
 BST provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. In addition, I have included example use cases for almost every model provided (in the `examples` directory), so you can see for yourself what a sensible Bayesian data analysis pipeline looks like. The example notebooks are primarily adaptations of [Jordi Warmenhoven's Python/PyMC3 port](https://github.com/JWarmenhoven/DBDA-python) of John Kruschke's excellent textbook ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). In fact, BST is in large part updating Jordi Warmenhoven's original PyMC3 versions of the Kruschke models to [PyMC 4.0](https://www.pymc.io/welcome.html) and wrapping them into tidy functions so that they are easily re-usable. 
  
@@ -47,15 +49,13 @@ Once installed locally, you can access it from any directory. When you import yo
 `import src.bayesian_stats as bst`
 
 ## Where can I get more help?
+I welcome your suggestions for improvement. Feel free to open a new issue through GitHub. However, please keep in mind that I am a full-time academic [researcher](https://osf.io/y75ud/wiki/home/) and not a software developer, so I may not have the time or the know-how to implement even moderately complicated suggestions. 
 
-
-## Goals
-
-## Contributions
-John Kruschke
-Richard McElreath
-Jordi Warmhoven
-PyMC developers
+## Acknowledgments
+- [John Kruschke](https://jkkweb.sitehost.iu.edu/)
+- [Richard McElreath](https://xcelab.net/rm/)
+- [Jordi Warmenhoven](https://github.com/JWarmenhoven)
+- [PyMC developers](https://www.pymc.io/welcome.html)
 
 
 ## License
