@@ -293,8 +293,8 @@ def unstandardize_linreg_parameters(zbeta0, zbeta1, sigma, x, y):
     them in original scale of raw data. 
     
     Args:
-        zeta0 (): Intercept for standardized data.
-        zeta1 (): Slope for standardized data.
+        zbeta0 (): Intercept for standardized data.
+        zbeta1 (): Slope for standardized data.
         mu_y (scalar): Mean of outcome variable.
         sigma_x (scalar): SD of predictor variable.
         sigma_y (scalar): SD of outcome variable.
@@ -312,7 +312,7 @@ def unstandardize_linreg_parameters(zbeta0, zbeta1, sigma, x, y):
     return beta0, beta1, sigma
 
 
-def hierarchical_regression(x, y, subj):  
+def hierarchical_regression(x, y, subj, n_draws=1000, acceptance_rate=0.9):  
     """
     
     """
@@ -322,43 +322,37 @@ def hierarchical_regression(x, y, subj):
     # Convert subject variable to categorical dtype if it is not already
     subj_idx, subj_levels, n_subj = parse_categorical(subj)
     
-    # if pd.api.types.is_categorical_dtype(subj):
-    #     pass
-    # else:
-    #     subj = subj.astype('category')
-    # subj_idx = subj.cat.codes.values
-    # subj_levels = subj.cat.categories
-    # n_subj = len(subj_levels)
-    
-    with pm.Model() as model:
+    with pm.Model(coords={"subj": subj_levels}) as model:
         # Hyperpriors
-        beta0 = pm.Normal('beta0', mu=0, tau=1/10**2)
-        beta1 = pm.Normal('beta1', mu=0, tau=1/10**2)
-        sigma0 = pm.Uniform('sigma0', 10**-3, 10**3)
-        sigma1 = pm.Uniform('sigma1', 10**-3, 10**3)
+        zbeta0 = pm.Normal('zbeta0', mu=0, tau=1/10**2)
+        zbeta1 = pm.Normal('zbeta1', mu=0, tau=1/10**2)
+        zsigma0 = pm.Uniform('zsigma0', 10**-3, 10**3)
+        zsigma1 = pm.Uniform('zsigma1', 10**-3, 10**3)
 
         # The intuitive parameterization results in a lot of divergences.
-        #beta0_s = pm.Normal('beta0_s', mu=beta0, sd=sigma0, shape=n_subj)
-        #beta1_s = pm.Normal('beta1_s', mu=beta1, sd=sigma1, shape=n_subj)
+        #zbeta0_s = pm.Normal('zbeta0_s', mu=zbeta0, sd=zsigma0, shape=n_subj)
+        #zbeta1_s = pm.Normal('zbeta1_s', mu=zbeta1, sd=zsigma1, shape=n_subj)
         
-        # See: http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/
-        # for rationale of following reparameterization
-        beta0_s_offset = pm.Normal('beta0_s_offset', mu=0, sd=1, shape=n_subj)
-        beta0_s = pm.Deterministic('beta0_s', beta0 + beta0_s_offset * sigma0)
+        # Priors for individual subject parameters. See: 
+        # http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/
+        # for rationale of following reparameterization.
+        zbeta0_s_offset = pm.Normal('zbeta0_s_offset', mu=0, sigma=1, dims="subj")
+        zbeta0_s = pm.Deterministic('zbeta0_s', zbeta0 + zbeta0_s_offset * zsigma0, dims="subj")
 
-        beta1_s_offset = pm.Normal('beta1_s_offset', mu=0, sd=1, shape=n_subj)
-        beta1_s = pm.Deterministic('beta1_s', beta1 + beta1_s_offset * sigma1)
+        zbeta1_s_offset = pm.Normal('zbeta1_s_offset', mu=0, sigma=1, dims="subj")
+        zbeta1_s = pm.Deterministic('zbeta1_s', zbeta1 + zbeta1_s_offset * zsigma1, dims="subj")
 
-        mu =  beta0_s[subj_idx] + beta1_s[subj_idx] * zx3
+        mu =  zbeta0_s[subj_idx] + zbeta1_s[subj_idx] * zx
 
-        sigma = pm.Uniform('sigma', 10**-3, 10**3)
-        nu = pm.Exponential('nu', 1/29.)
+        zsigma = pm.Uniform('zsigma', 10**-3, 10**3)
+        nu_minus_one = pm.Exponential('nu_minus_one', 1 / 29)
+        nu = pm.Deterministic('nu', nu_minus_one + 1)
         
         # Define likelihood function
-        likelihood = pm.StudentT('likelihood', nu, mu=mu, sd=sigma, observed=zy)  
+        likelihood = pm.StudentT('likelihood', nu, mu=mu, sigma=zsigma, observed=zy)  
         
         # Sample from posterior
-        idata = pm.sample(draws=n_draws)
+        idata = pm.sample(draws=n_draws, target_accept=acceptance_rate)
         
         return model, idata
 
