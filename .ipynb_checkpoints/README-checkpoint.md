@@ -2,13 +2,6 @@
 
 # Bayesian Statistics Toolbox (BST) 
 
-- What does this project do?
-- Why is this project useful?
-- How do I get started?
-- Where can I get more help, if I need it?
-- Goals
-- Contributions
-
 ## What is this?
 BST is a beta-version library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
 
@@ -16,6 +9,10 @@ BST provides you with the tools for utilizing and exploring Bayesian statistics 
  
 ## Why is this useful?
 By wrapping model definitions of Bayesian generalized linear models into convenient functions, BST aims to make it easier to run Bayesian analyses that are analogous to some of the most commonly used frequentist tests in the behavioral and neural sciences (think t-tests, ANOVAs, regression). I originally started working on BST because I wanted to be able to utilize Bayesian statistics in my own research without having to code each model up from scratch, as that itself can be a barrier (especially when there is the temptation to fall back into frequentist habits using one-liners from `statsmodels`). Soon, I realized that this project may actually lower the bar to entry into the wonderful world of Bayesian statistics for others as well, and so here we are. 
+
+BST is also useful if you're going through the DBDA textbook and want to see how to implement the models in PyMC 4.0. However, this project is still a work in progress and does not cover all of the models in DBDA. For a much more complete Python-ic implementation (in PyMC3), see Jordi Warmenhoven's [repo](https://github.com/JWarmenhoven/DBDA-python).
+
+Please note that the models all utilize fairly uninformative, diffuse priors, which are, for the most part, the exact same ones used in the Kruschke text. An easy way to modify the priors, or any part of the model, for that matter, is to print the function (add two question marks after the function name) and copy it over to your editor. 
 
 ## Dependencies
 Some of the main libraries used in this project:
@@ -49,7 +46,18 @@ Once installed locally, you can access it from any directory. When you import yo
 `import src.bayesian_stats as bst`
 
 ## Where can I get more help?
+If you're just starting off with Bayesian statistics, the two best introductory textbooks I know of are ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0) by John Kruschke and ["Statistical Rethinking"](https://xcelab.net/rm/statistical-rethinking/) by Richard McElreath. If you already have some background in Bayesian inference but are new to Python and/or PyMC, the PyMC developers have some great example notebooks [here](https://www.pymc.io/projects/examples/en/latest/gallery.html).
+
+## Notice any bugs or have suggestions?
 I welcome your suggestions for improvement. Feel free to open a new issue through GitHub. However, please keep in mind that I am a full-time academic [researcher](https://osf.io/y75ud/wiki/home/) and not a software developer, so I may not have the time or the know-how to implement even moderately complicated suggestions. 
+
+## Are there any plans to further develop BST?
+Yes! I plan to add the following in the near future:
+
+- Bayesian logistic regression 
+- Bayes Factors
+- Bayesian meta-analysis 
+- Example notebooks utilizing prior and posterior predictive checks
 
 ## Acknowledgments
 - [John Kruschke](https://jkkweb.sitehost.iu.edu/)
@@ -57,10 +65,10 @@ I welcome your suggestions for improvement. Feel free to open a new issue throug
 - [Jordi Warmenhoven](https://github.com/JWarmenhoven)
 - [PyMC developers](https://www.pymc.io/welcome.html)
 
-
 ## License
-
+https://coderefinery.github.io/github-without-command-line/doi/#step-2-activate-the-repository-on-zenodo-sandbox
 
 ## Citations
+https://citation-file-format.github.io/
 
 
