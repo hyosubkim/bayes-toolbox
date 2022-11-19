@@ -10,7 +10,7 @@
 ## What is this?
 BST is a library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
 
-BST provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. In addition, I have included example use cases for almost every model provided, so you can see for yourself what a sensible Bayesian data analysis pipeline looks like. 
+BST provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. In addition, I have included example use cases for almost every model provided (in the `examples` directory), so you can see for yourself what a sensible Bayesian data analysis pipeline looks like. The example notebooks are adaptations of [Jordi Warmenhoven's Python/PyMC3 port](https://github.com/JWarmenhoven/DBDA-python) of John Kruschke's excellent textbook ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). Please note that these notebooks have been updated to make use of PyMC4 and that this does not (yet) include all of the examples from the original.
 
 Tests were performed on Kruschke data. 
 
