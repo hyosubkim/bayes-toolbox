@@ -25,7 +25,7 @@ Some of the main libraries used in this project:
 - seaborn
 
 ## How do I get started?
-(*Recommended*)
+*(Recommended)*   
 If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning this repo you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory and type the following conda command in the Terminal (I strongly recommend [Anaconda](https://www.anaconda.com/) to install Python and the conda utility on your computer):
 ```
 $ conda env create --name bayes_toolbox --file environment.yml
@@ -99,7 +99,7 @@ Thank you to the following people for generously sharing their work and knowledg
 - [PyMC developers](https://github.com/pymc-devs/pymc)
 - [ArviZ developers](https://www.arviz.org/en/latest/our_team.html)
 
-I have tried my best to give credit for your work where appropriate, but please let me know if you would like your attributed in a different manner. 
+I have tried my best to give credit for your work wherever appropriate, but please let me know if you would like your work attributed in a different manner. 
 
 ## License
 https://coderefinery.github.io/github-without-command-line/doi/#step-2-activate-the-repository-on-zenodo-sandbox
