@@ -3,14 +3,14 @@
 # Bayesian Statistics Toolbox (BST) 
 
 ## What is this?
-BST is a beta-version library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
+BST is a library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
 
-BST provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. In addition, I have included example use cases for almost every model provided (in the `examples` directory), so you can see for yourself what a sensible Bayesian data analysis pipeline looks like. The example notebooks are primarily adaptations of [Jordi Warmenhoven's Python/PyMC3 port](https://github.com/JWarmenhoven/DBDA-python) of John Kruschke's excellent textbook ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). In fact, BST is in large part updating Jordi Warmenhoven's original PyMC3 versions of the Kruschke models to [PyMC 4.0](https://www.pymc.io/welcome.html) and wrapping them into tidy functions so that they are easily re-usable. 
+BST provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. I've included example use cases for almost every model provided (in the `examples` directory), so you can see for yourself what a sensible Bayesian data analysis pipeline looks like. The example notebooks are mostly adaptations of [Jordi Warmenhoven's Python/PyMC3 port](https://github.com/JWarmenhoven/DBDA-python) of John Kruschke's excellent textbook ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). BST is in large part updating Jordi Warmenhoven's original PyMC3 versions of the Kruschke models to [PyMC 4.0](https://www.pymc.io/welcome.html) and wrapping them into tidy functions so that they are easily re-usable. 
 
-I've also tried to help take care of some of the more finicky steps involved in Bayesian statistical modeling by writing, adapting, and incorporating functions for things like standardizing/unstandardizing variables for more efficient MCMC sampling, parsing categorical variables for easier indexing, and implementing sum-to-zero constraints in ANOVA-like models. These are the sorts of implementational details that can add time when creating an analysis pipeline and make it less likely to use Bayesian statistics. I hope that BST removes those obstacles as well.  
+In addition, BST take care of some of the more finicky steps involved in Bayesian statistical modeling with embedded functions for things like standardizing/unstandardizing variables for more efficient MCMC sampling, parsing categorical variables for easier indexing, and implementing sum-to-zero constraints in ANOVA-like models. These are the sorts of implementational details that can add time (and frustration) when creating an analysis pipeline and discourage otherwise interested scientists from using Bayesian statistics. I hope BST removes those obstacles as well.  
  
 ## Why is this useful?
-By wrapping model definitions of Bayesian generalized linear models into convenient functions, BST aims to make it easier to run Bayesian analyses that are analogous to some of the most commonly used frequentist tests in the behavioral and neural sciences (think t-tests, ANOVAs, regression). I originally started working on BST because I wanted to be able to utilize Bayesian statistics in my own research without having to code each model up from scratch, as that itself can be a barrier (especially when there is the temptation to fall back into frequentist habits using one-liners from `statsmodels`). Soon, I realized that this project may actually lower the bar to entry into the wonderful world of Bayesian statistics for others as well, and so here we are. 
+By wrapping model definitions of Bayesian generalized linear models into convenient functions, BST makes it easier to run Bayesian analyses that are analogous to some of the most commonly used frequentist tests in the behavioral and neural sciences (think t-tests, ANOVAs, regression). I originally started working on BST because I wanted to be able to utilize Bayesian statistics in my own research without having to code each model up from scratch, as that itself can be a barrier (especially when there is the temptation to fall back into frequentist habits using one-liners from `statsmodels`). Soon, I realized that this project may actually lower the bar to entry into the wonderful world of Bayesian statistics for others as well, and so here we are. 
 
 BST is also useful if you're going through the DBDA textbook and want to see how to implement the models in PyMC 4.0. However, this project is still a work in progress and does not cover all of the models in DBDA. For a much more complete Python-ic implementation (in PyMC3), see Jordi Warmenhoven's [repo](https://github.com/JWarmenhoven/DBDA-python).
 
@@ -82,6 +82,8 @@ Yes! I plan to add the following in the near future:
 - Bayesian logistic regression 
 - Bayes Factors
 - Bayesian meta-analysis 
+- Bayesian spectral analysis
+- Model selection
 - Incorporating prior and posterior predictive checks into the examples
 - Incorporating maximum entropy priors 
 
@@ -90,11 +92,12 @@ For a more weapons-grade Bayesian statistical modeling interface, check out:
 - [Bambi](https://github.com/bambinos/bambi): BAyesian Model-Building Interface (BAMBI) in Python.
 
 ## Acknowledgments
-Thanks to the following people for generously sharing their knowledge:
+Thank you to the following people for generously sharing their work and knowledge:
 - [John Kruschke](https://jkkweb.sitehost.iu.edu/)
 - [Richard McElreath](https://xcelab.net/rm/)
 - [Jordi Warmenhoven](https://github.com/JWarmenhoven)
 - [PyMC developers](https://github.com/pymc-devs/pymc)
+- [ArviZ developers](https://www.arviz.org/en/latest/our_team.html)
 
 ## License
 https://coderefinery.github.io/github-without-command-line/doi/#step-2-activate-the-repository-on-zenodo-sandbox

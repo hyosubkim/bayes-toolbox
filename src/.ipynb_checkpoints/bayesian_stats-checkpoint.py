@@ -1,20 +1,19 @@
 import aesara.tensor as at
 import arviz as az
 import numpy as np
+import numpy.ma as ma
 import pandas as pd
 import pymc as pm
-import seaborn as sns
-from aesara import tensor as at
 
 
 def standardize(X):
-    """Standardizes the input variable.
+    """Standardize the input variable.
     
     Args:
-        X (ndarray/Series/DataFrame): The variable(s) to standardize. 
+        X (ndarray): The variable(s) to standardize. 
     
     Returns:
-        ndarray/Series/DataFrame: The standardized version of the input X.
+        ndarray
     """
     
     # Check if X is a dataframe, in which case it will be handled differently. 
@@ -31,15 +30,15 @@ def standardize(X):
 def parse_categorical(x):
     """A function for extracting information from a grouping variable.
     
-    If the input arg is not already a category-type variable, convert 
-    it to one. Then, extract the codes, unique levels, and number of 
+    If the input arg is not already a category-type variable, converts 
+    it to one. Then, extracts the codes, unique levels, and number of 
     levels from the variable.
     
     Args:
         x (categorical): The categorical type variable to parse.
     
     Returns:
-        ndarrays for the values, unique level, and number of levels.
+        The codes, unique levels, and number of levels from the input variable. 
     """
     
     # First, check to see if passed variable is of type "category".
@@ -78,8 +77,9 @@ def is_standardized(X, eps=0.0001):
 def BEST(y, group, n_draws=1000):
     """Implementation of John Kruschke's BEST test.
     
-    Compares outcomes from two groups and estimates parameters. This version
-    uses smarter indexing than original. 
+    Estimates parameters related to outcomes of two groups. See:
+        https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf
+        for more details. 
     
     Args:
         y (ndarray/Series): The metric outcome variable.
@@ -135,7 +135,7 @@ def BEST(y, group, n_draws=1000):
 
 
 def BEST_paired(y1, y2=None, n_draws=1000):
-    """BEST procedure on single sample or paired samples. 
+    """BEST procedure on single or paired sample(s). 
     
     Args: 
         y1 (ndarray/Series): Either single sample or difference scores. 
@@ -180,6 +180,9 @@ def BEST_paired(y1, y2=None, n_draws=1000):
 
 def robust_linear_regression(x, y, n_draws=1000):
     """Perform a robust linear regression with one predictor.
+    
+    The observations are modeled with a t-distribution which can much more
+    readily account for "outlier" observations.
     
     Args:
         x (ndarray): The standardized predictor (independent) variable.
@@ -245,8 +248,15 @@ def unstandardize_linreg_parameters(zbeta0, zbeta1, sigma, x, y):
 
 
 def hierarchical_regression(x, y, subj, n_draws=1000, acceptance_rate=0.9):  
-    """
+    """A multi-level model for estimating group and individual level parameters.
     
+    Args:
+        x: Predictor variable.
+        y: Outcome variable.
+        subj: Subj id variable.
+       
+    Returns:
+        PyMC Model and InferenceData objects.
     """
     zx, mu_x, sigma_x = standardize(x)
     zy, mu_y, sigma_y = standardize(y)
@@ -262,10 +272,6 @@ def hierarchical_regression(x, y, subj, n_draws=1000, acceptance_rate=0.9):
         zbeta1 = pm.Normal('zbeta1', mu=0, tau=1/10**2)
         zsigma0 = pm.Uniform('zsigma0', 10**-3, 10**3)
         zsigma1 = pm.Uniform('zsigma1', 10**-3, 10**3)
-
-        # The intuitive parameterization results in a lot of divergences.
-        #zbeta0_s = pm.Normal('zbeta0_s', mu=zbeta0, sd=zsigma0, shape=n_subj)
-        #zbeta1_s = pm.Normal('zbeta1_s', mu=zbeta1, sd=zsigma1, shape=n_subj)
         
         # Priors for individual subject parameters. See: 
         # http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/
@@ -299,7 +305,7 @@ def multiple_linear_regression(X, y, n_draws=1000):
         y (ndarray/Series): The outcome variable.
         
     Returns:
-    
+        PyMC Model and InferenceData objects.
     """
     
     # Standardize both predictor and outcome variables.
@@ -349,6 +355,7 @@ def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, zsigma, X, y):
         sigma_y: SD of outcome variable.
         
     Returns:
+        Standardized coefficients and scale parameter.
     """
     
     _, mu_X, sigma_X = standardize(X)
@@ -364,18 +371,24 @@ def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, zsigma, X, y):
 
 
 def gamma_shape_rate_from_mode_sd(mode, sd):
-    """Calculate Gamma shape and rate from mode and sd.
-
+    """Calculate Gamma shape and rate parameters from mode and sd.
+    
     """
-
     rate = (mode + np.sqrt(mode**2 + 4 * sd**2 )) / (2 * sd**2)
     shape = 1 + mode * rate
+    
     return shape, rate
 
 
 def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
-    """
+    """Models metric outcome resulting from single categorical predictor.
     
+    Args:
+        x: The categorical (nominal) predictor variable.
+        y: The outcome variable. 
+        
+    Returns:
+        PyMC Model and InferenceData objects.
     """
  
     mu_y = y.mean()
@@ -391,6 +404,8 @@ def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
         a = pm.Normal('a', 0.0, sigma=sigma_a, dims="groups")
 
         sigma_y = pm.Uniform('sigma_y', sigma_y / 100, sigma_y * 10)
+        
+        # Define the likelihood function
         likelihood = pm.Normal('likelihood', a0 + a[x_vals], sigma=sigma_y, observed=y)
 
         # Convert a0, a to sum-to-zero b0, b 
@@ -404,8 +419,21 @@ def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
     
     
 def hierarchical_bayesian_ancova(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma_y, n_draws=1000):
-    """
-
+    """Models outcome resulting from categorical and metric predictors. 
+    
+    The Bayesian analogue of an ANCOVA test. 
+    
+    Args: 
+        x: The categorical predictor.
+        x_met: The metric predictor.
+        y: The outcome variable.
+        mu_x_met: The mean of x_met.
+        mu_y: The mean of y.
+        sigma_x_met: The SD of x_met.
+        sigma_y: The SD of y.
+    
+    Returns: 
+        PyMC Model and InferenceData objects.
     """
     x_vals, levels, n_levels = parse_categorical(x)
 
@@ -421,20 +449,31 @@ def hierarchical_bayesian_ancova(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma
         # lower bound on sigma_y
         sigma_y = pm.Uniform('sigma_y', sigma_y / 100, sigma_y * 10)
         mu = a0 + a[x_vals] + a_met * (x_met - mu_x_met)
+        
+        # Define the likelihood function
         likelihood = pm.Normal('likelihood', mu=mu, sigma=sigma_y, observed=y)
 
         # Convert a0, a to sum-to-zero b0, b 
         b0 = pm.Deterministic('b0', a0 + at.mean(a) + a_met * (-mu_x_met))
         b = pm.Deterministic('b', a - at.mean(a)) 
-
+        
+        # Sample from the posterior
         idata = pm.sample(draws=n_draws)
 
         return model, idata
     
     
 def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9):
-    """
+    """Bayesian analogue of ANOVA using a t-distributed likelihood function.
     
+    Args:
+        x: The categorical predictor variable.
+        y: The outcome variable.
+        mu_y: The mean of y.
+        sigma_y: The SD of y.
+    
+    Returns:
+        PyMC Model and InferenceData objects.
     """
     x_vals, levels, n_levels = parse_categorical(x)
     
@@ -445,6 +484,7 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9
         sigma_a = pm.Gamma('sigma_a', alpha=a_shape, beta=a_rate)
         a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 10)
         a = pm.Normal('a', 0.0, sigma=sigma_a, dims="groups")
+        
         # Hyperparameters 
         sigma_y_sd = pm.Gamma('sigma_y_sd', alpha=a_shape, beta=a_rate)
         sigma_y_mode = pm.Gamma("sigma_y_mode", alpha=a_shape, beta=a_rate)
@@ -454,6 +494,8 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9
         sigma_y = pm.Gamma("sigma", alpha=sigma_y_shape, beta=sigma_y_rate, dims="groups")
         nu_minus1 = pm.Exponential('nu_minus1', 1 / 29)
         nu = pm.Deterministic('nu', nu_minus1 + 1)
+        
+        # Define the likelihood function
         likelihood = pm.Normal('likelihood', a0 + a[x_vals], sigma=sigma_y[x_vals], observed=y)
 
         # Convert a0, a to sum-to-zero b0, b 
@@ -461,55 +503,122 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9
         b0 = pm.Deterministic('b0', at.mean(m))
         b = pm.Deterministic('b', m - b0) 
         
-        # Initialization argument is necessary for sampling to converge
+        # Sample from the posterior. Initialization argument is necessary 
+        # for sampling to converge.
         idata = pm.sample(draws=n_draws, init='advi+adapt_diag', target_accept=acceptance_rate)
 
         return model, idata
     
 
-def two_factor_anova(x1, x2, y):
+def bayesian_two_factor_anova(x1, x2, y, n_draws=1000):
+    """Bayesian analogue of two-factor ANOVA.
     
+    Models instance of outcome resulting from two categorical predictors.
+    
+    Args:
+        x1: First categorical predictor variable.
+        x2: Second categorical predictor variable.
+        y: The outcome variable.
+    
+    Returns:
+        PyMC Model and InferenceData objects.
+    """
     mu_y = y.mean()
     sigma_y = y.std()
 
-    x1 = df.Pos
-    x2 = df.Org
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2 , 2 * sigma_y)
+    x1_vals, levels1, n_levels1 = parse_categorical(x1)
+    x2_vals, levels2, n_levels2 = parse_categorical(x2)
 
-    a_shape, a_rate = bst.gamma_shape_rate_from_mode_sd(sigma_y / 2 , 2 * sigma_y)
-    x1_vals, levels1, n_levels1 = bst.parse_categorical(x1)
-    x2_vals, levels2, n_levels2 = bst.parse_categorical(x2)
-
-    with pm.Model(coords={"rank": levels1, "dept": levels2}) as model:
-
-        #a0 = pm.Normal('a0', mu_y, tau=1/(sigma_y*5)**2)
+    with pm.Model(coords={"factor1": levels1, "factor2": levels2}) as model:
+        # To understand the reparameterization, see:
+        # http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/ 
         a0_tilde = pm.Normal('a0_tilde', mu=0, sigma=1)
         a0 = pm.Deterministic('a0', mu_y + sigma_y * 5 * a0_tilde)
 
         sigma_a1 = pm.Gamma('sigma_a1', a_shape, a_rate)
-        #a1 = pm.Normal('a1', 0.0, tau=1/sigma_a1**2, shape=n_levels1)
-        a1_tilde = pm.Normal('a1_tilde', mu=0, sigma=1, dims="rank")
+        a1_tilde = pm.Normal('a1_tilde', mu=0, sigma=1, dims="factor1")
         a1 = pm.Deterministic('a1', 0.0 + sigma_a1*a1_tilde)
 
         sigma_a2 = pm.Gamma('sigma_a2', a_shape, a_rate)
-        #a2 = pm.Normal('a2', 0.0, tau=1/sigma_a2**2, shape=n_levels2)
-        a2_tilde = pm.Normal('a2_tilde', mu=0, sigma=1, dims="dept")
+        a2_tilde = pm.Normal('a2_tilde', mu=0, sigma=1, dims="factor2")
         a2 = pm.Deterministic('a2', 0.0 + sigma_a2*a2_tilde)
 
         sigma_a1a2 = pm.Gamma('sigma_a1a2', a_shape, a_rate)
-        #a1a2 = pm.Normal('a1a2', 0.0, 1/sigma_a1a2**2, shape=(n_levels1, n_levels2))
-        a1a2_tilde = pm.Normal('a1a2_tilde', mu=0, sigma=1, dims=("rank", "dept"))
-        a1a2 = pm.Deterministic('a1a2', 0.0 + sigma_a1a2*a1a2_tilde)
+        a1a2_tilde = pm.Normal('a1a2_tilde', mu=0, sigma=1, dims=("factor1", "factor2"))
+        a1a2 = pm.Deterministic('a1a2', 0.0 + sigma_a1a2 * a1a2_tilde)
 
         mu = a0 + a1[x1_vals] + a2[x2_vals] +a1a2[x1_vals, x2_vals]
         sigma = pm.Uniform('sigma', sigma_y / 100, sigma_y * 10)
-
+        
+        # Define the likelihood function
         likelihood = pm.Normal('likelihood', mu, sigma=sigma, observed=y) 
+        
+        # Sample from the posterior
+        idata = pm.sample(draws=n_draws, target_accept=0.95)
+        
+        return model, idata
 
-        idata = pm.sample(nuts={'target_accept': 0.95})
 
+def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
+    """Returns coefficients that obey sum-to-zero constraing.
+    
+    Args:
+        idata: InferenceData object.
+        x1: First categorical predictor variable.
+        x2: Second categorical predictor variable.
+    
+    Returns:
+        Posterior in the form of InferenceData object. 
+    
+    """
+    # Extract posterior probabilities and stack your chains
+    post = az.extract(idata.posterior)
+    
+    _, _, n_levels_x1 = parse_categorical(x1)
+    _, _, n_levels_x2 = parse_categorical(x2)
+    
+    # Add variables
+    post = post.assign(m=(["factor1", "factor2", "sample"], np.zeros((n_levels_x1, n_levels_x2, len(post['sample'])))))
+    post = post.assign(b1b2=(["factor1", "factor2", "sample"], np.zeros((n_levels_x1, n_levels_x2, len(post['sample'])))))
+    post = post.assign(b0=(["sample"], np.zeros(len(post["sample"]))))
+    post = post.assign(b1=(["factor1", "sample"], np.zeros((n_levels_x1, len(post["sample"])))))
+    post = post.assign(b2=(["factor2", "sample"], np.zeros((n_levels_x2, len(post["sample"])))))
+    
+    # Transforming the trace data to sum-to-zero values. First, calculate
+    # predicted mean values based on different levels of predictors.
+    for (j1, j2) in np.ndindex(n_levels_x1, n_levels_x2):
+            post.m[j1, j2] =  (post['a0'] +
+                         post['a1'][j1, :] +
+                         post['a2'][j2, :] +
+                         post['a1a2'][j1, j2, :])
 
-def mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1000):
+    post["b0"] = post.m.mean(dim=["factor1", "factor2"])
+    post["b1"] = post.m.mean(dim="factor2") - post.b0
+    post["b2"] = post.m.mean(dim="factor1") - post.b0
 
+    for (j1, j2) in np.ndindex(n_levels_x1, n_levels_x2):
+            post.b1b2[j1,j2] = (post.m[j1, j2] - (post.b0 + post.b1[j1] + post.b2[j2]))
+    
+    return post
+    
+    
+def bayesian_mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1000):
+    """Performs Bayesian analogue of mixed model (split-plot) ANOVA.
+    
+    Models instance of outcome resulting from both between- and within-subjects
+    factors. Outcome is measured several times from each observational unit (i.e.,
+    repeated measures). 
+    
+    Args:
+        between_subj_var: The between-subjects variable.
+        withing_subj_var: The within-subjects variable.
+        subj_id: The subj ID variable. 
+        y: The outcome variable. 
+    
+    Returns: 
+        PyMC Model and InferenceData objects. 
+    """
     # Statistical model: Split-plot design after Kruschke Ch. 20
     # Between-subjects factor (i.e., group)
     x_between, levels_x_between, num_levels_x_between = parse_categorical(between_subj_var)
@@ -520,7 +629,7 @@ def mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1
     # Individual subjects
     x_subj, levels_x_subj, num_levels_x_subj = parse_categorical(subj_id)
 
-    # Dependent varia_ble 
+    # Dependent variable 
     mu_y = y.mean()
     sigma_y = y.std()
 
@@ -553,9 +662,118 @@ def mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1
 
         mu = a0 + aB[x_between] + aW[x_within] + aBxW[x_between, x_within] + aS[x_subj] 
         sigma = pm.Uniform('sigma', lower=sigma_y / 100, upper=sigma_y * 10)
-
+        
+        # Define likelihood
         likelihood = pm.Normal('likelihood', mu=mu, sigma=sigma, observed=y)
-
-        idata = pm.sample(draws=n_samples, target_accept=.95, tune=2000)
+        
+        # Sample from the posterior
+        idata = pm.sample(draws=n_samples, tune=2000, target_accept=.95)
     
     return model, idata
+
+
+def unpack_posterior_vars(posterior):
+    """Unpacks posterior variables from xarray structure.
+    
+    Intended for use with bayesian_mixed_model_anova.
+    
+    Args: 
+        posterior: Posterior variables from InferenceData object.
+    
+    Returns: 
+        Posterior variables.
+    """
+    a0 = posterior["a0"]
+    aB = posterior['aB']
+    aW = posterior['aW']
+    aBxW = posterior['aBxW']
+    aS = posterior['aS']
+    sigma = posterior['sigma']
+    
+    return a0, aB, aW, aBxW, aS, sigma
+    
+
+def create_masked_array(a0, aB, aW, aBxW, aS, posterior, between_subj_var, within_subj_var, subj_id):
+    """Creates a masked array with all cell values from the posterior.
+    """
+    # Between-subjects factor 
+    x_between, levels_x_between, num_levels_x_between = parse_categorical(between_subj_var)
+
+    # Within-subjects factor 
+    x_within, levels_x_within, num_levels_x_within = parse_categorical(within_subj_var)
+
+    # Individual subjects
+    x_subj, levels_x_subj, num_levels_x_subj = parse_categorical(subj_id)
+    
+    # Initialize the array with zeros
+    posterior = posterior.assign(m_SxBxW=(["subj", "between_subj", "within_subj", "sample"], 
+                                      np.zeros((num_levels_x_subj, num_levels_x_between,
+                                      num_levels_x_within, len(posterior["sample"])))))
+
+    # Fill the arrray
+    for k, i, j in zip(x_subj, x_between, x_within):
+        posterior.m_SxBxW[k, i, j, :] = a0 + aB[i, :] + aW[j, :] + aBxW[i, j, :] + aS[k, :]
+
+    # Convert to masked array that masks value '0'.
+    posterior = posterior.assign(m_SxBxW=(["subj", "between_subj", "within_subj", "sample"], 
+                              (ma.masked_equal(posterior.m_SxBxW, 0))))
+    
+    m_SxBxW = posterior.m_SxBxW
+
+    return m_SxBxW
+
+
+def calc_marginal_means(m_SxBxW):
+    """Calculate the marginalized means using the masked array.
+    """
+    
+    # Mean for subject S across levels of W, within the level of B
+    m_S = m_SxBxW.mean(dim="within_subj")
+    
+    # Mean for treatment combination BxW, across subjects S
+    m_BxW = m_SxBxW.mean(dim="subj")
+
+    # Mean for level B, across W and S
+    m_B = m_BxW.mean(dim=["within_subj"])
+
+    # Mean for level W, across B and S
+    m_W = m_BxW.mean(dim=["between_subj"])
+
+    return m_S, m_BxW, m_B, m_W
+
+
+def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
+    """Returns coefficients that obey sum-to-zero constraing.
+    
+    Args:
+        idata: InferenceData object.
+        between_subj_var: Between-subjects predictor variable.
+        within_subj_var: Within-subjects predictor variable.
+        subj_id: Subject ID variable. 
+    
+    Returns:
+        Posterior variables. 
+    """
+    
+    posterior = az.extract(idata.posterior)
+    a0, aB, aW, aBxW, aS, sigma = unpack_posterior_vars(posterior)
+    m_SxBxW = create_masked_array(a0, aB, aW, aBxW, aS, posterior, between_subj_var, within_subj_var, subj_id)
+    m_S, m_BxW, m_B, m_W = calc_marginal_means(m_SxBxW)
+     
+    # Equation 20.3
+    m = m_BxW.mean(dim=["between_subj", "within_subj"])
+    b0 = m
+
+    # Equation 20.4
+    bB = m_B - m
+
+    # Equation 20.5
+    bW = m_W - m
+
+    # Equation 20.6
+    bBxW = m_BxW - m_B - m_W + m
+
+    # Equation 20.7
+    bS = m_S - m_B
+    
+    return b0, bB, bW, bBxW, bS
