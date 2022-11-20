@@ -26,6 +26,7 @@ Some of the main libraries used in this project:
 - [seaborn](https://seaborn.pydata.org/)
 - [Xarray](https://docs.xarray.dev/en/stable/)
 
+
 ## How do I get started?
 *(Recommended)*   
 If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning this repo you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory and type the following conda command in the Terminal (I strongly recommend [Anaconda](https://www.anaconda.com/) to install Python and the conda utility on your computer):
