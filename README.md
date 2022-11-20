@@ -97,10 +97,10 @@ For a more weapons-grade Bayesian statistical modeling interface, check out:
 ## Citing BST
 If you use BST and would like to cite, please use one of the following:
 
-APA format:
+***APA format:***
 - Kim, H. E. (2022). Bayesian Statistics Toolbox (BST) (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.7339667
 
-BibTeX format:
+***BibTeX format:***
 ```
 @software{Kim_Bayesian_Statistics_Toolbox_2022,
 author = {Kim, Hyosub E.},
