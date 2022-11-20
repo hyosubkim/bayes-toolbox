@@ -1,5 +1,3 @@
-[![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
-
 # Bayesian Statistics Toolbox (BST) 
 
 ## What is this?
@@ -104,9 +102,25 @@ Thank you to the following people for generously sharing their work and knowledg
 I have tried my best to give credit for your work wherever appropriate, but please let me know if you would like your work attributed in a different manner. 
 
 ## License
-https://coderefinery.github.io/github-without-command-line/doi/#step-2-activate-the-repository-on-zenodo-sandbox
+This work is distributed under a [MIT license](https://github.com/hyosubkim/bayesian-statistics-toolbox/blob/main/LICENSE). 
 
-## Citations
-https://citation-file-format.github.io/
+## Citing BST
+If you use BST and would like to cite, please use one of the following:
 
+APA format:
+- Kim, H. (2022). Bayesian Statistics Toolbox (BST) (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.7339667
+[![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
+
+BibTeX format:
+```
+@software{Kim_Bayesian_Statistics_Toolbox_2022,
+author = {Kim, Hyosub},
+doi = {10.5281/zenodo.7339667},
+month = {11},
+title = {{Bayesian Statistics Toolbox (BST)}},
+url = {https://github.com/hyosubkim/bayesian-statistics-toolbox},
+version = {1.0},
+year = {2022}
+}
+```
 
