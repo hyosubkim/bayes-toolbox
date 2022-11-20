@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
+
 # Bayesian Statistics Toolbox (BST) 
 
 ## What is this?
@@ -108,13 +110,12 @@ This work is distributed under a [MIT license](https://github.com/hyosubkim/baye
 If you use BST and would like to cite, please use one of the following:
 
 APA format:
-- Kim, H. (2022). Bayesian Statistics Toolbox (BST) (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.7339667
-[![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
+- Kim, H. E. (2022). Bayesian Statistics Toolbox (BST) (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.7339667
 
 BibTeX format:
 ```
 @software{Kim_Bayesian_Statistics_Toolbox_2022,
-author = {Kim, Hyosub},
+author = {Kim, Hyosub E.},
 doi = {10.5281/zenodo.7339667},
 month = {11},
 title = {{Bayesian Statistics Toolbox (BST)}},
