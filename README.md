@@ -6,6 +6,8 @@
 BST is a beta-version library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
 
 BST provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. In addition, I have included example use cases for almost every model provided (in the `examples` directory), so you can see for yourself what a sensible Bayesian data analysis pipeline looks like. The example notebooks are primarily adaptations of [Jordi Warmenhoven's Python/PyMC3 port](https://github.com/JWarmenhoven/DBDA-python) of John Kruschke's excellent textbook ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). In fact, BST is in large part updating Jordi Warmenhoven's original PyMC3 versions of the Kruschke models to [PyMC 4.0](https://www.pymc.io/welcome.html) and wrapping them into tidy functions so that they are easily re-usable. 
+
+I've also tried to help take care of some of the more finicky steps involved in Bayesian statistical modeling by writing, adapting, and incorporating functions for things like standardizing/unstandardizing variables for more efficient MCMC sampling, parsing categorical variables for easier indexing, and implementing sum-to-zero constraints in ANOVA-like models. These are the sorts of implementational details that can add time when creating an analysis pipeline and make it less likely to use Bayesian statistics. I hope that BST removes those obstacles as well.  
  
 ## Why is this useful?
 By wrapping model definitions of Bayesian generalized linear models into convenient functions, BST aims to make it easier to run Bayesian analyses that are analogous to some of the most commonly used frequentist tests in the behavioral and neural sciences (think t-tests, ANOVAs, regression). I originally started working on BST because I wanted to be able to utilize Bayesian statistics in my own research without having to code each model up from scratch, as that itself can be a barrier (especially when there is the temptation to fall back into frequentist habits using one-liners from `statsmodels`). Soon, I realized that this project may actually lower the bar to entry into the wonderful world of Bayesian statistics for others as well, and so here we are. 
@@ -13,6 +15,17 @@ By wrapping model definitions of Bayesian generalized linear models into conveni
 BST is also useful if you're going through the DBDA textbook and want to see how to implement the models in PyMC 4.0. However, this project is still a work in progress and does not cover all of the models in DBDA. For a much more complete Python-ic implementation (in PyMC3), see Jordi Warmenhoven's [repo](https://github.com/JWarmenhoven/DBDA-python).
 
 Please note that the models all utilize fairly uninformative, diffuse priors, which are, for the most part, the exact same ones used in the Kruschke text. An easy way to modify the priors, or any part of the model, for that matter, is to print the function (add two question marks after the function name) and copy it over to your editor. 
+
+## Example syntax
+Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, it looks like
+
+```python
+# Call your BST function and return the PyMC model and InferenceData objects
+model, idata = bst.hierarchical_regression(df["x"], df["y"], df["subj"], acceptance_rate=0.95)
+```
+
+Before, it would take *many* more lines of code. 
+
 
 ## Dependencies
 Some of the main libraries used in this project:
@@ -43,7 +56,9 @@ $ pip install -e .
 
 Once installed locally, you can access it from any directory. When you import your packages, add the following line:
 
-`import src.bayesian_stats as bst`
+```python
+import src.bayesian_stats as bst
+```
 
 ## Where can I get more help?
 If you're just starting off with Bayesian statistics, the two best introductory textbooks I know of are ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0) by John Kruschke and ["Statistical Rethinking"](https://xcelab.net/rm/statistical-rethinking/) by Richard McElreath. If you already have some background in Bayesian inference but are new to Python and/or PyMC, the PyMC developers have some great example notebooks [here](https://www.pymc.io/projects/examples/en/latest/gallery.html).
@@ -57,13 +72,19 @@ Yes! I plan to add the following in the near future:
 - Bayesian logistic regression 
 - Bayes Factors
 - Bayesian meta-analysis 
-- Example notebooks utilizing prior and posterior predictive checks
+- Incorporating prior and posterior predictive checks into the examples
+- Incorporating maximum entropy priors 
+
+## Other related Python projects 
+For a more weapons-grade Bayesian statistical modeling interface, check out:
+- [Bambi](https://github.com/bambinos/bambi): BAyesian Model-Building Interface (BAMBI) in Python.
 
 ## Acknowledgments
+Thanks to the following people for openly sharing their knowledge:
 - [John Kruschke](https://jkkweb.sitehost.iu.edu/)
 - [Richard McElreath](https://xcelab.net/rm/)
 - [Jordi Warmenhoven](https://github.com/JWarmenhoven)
-- [PyMC developers](https://www.pymc.io/welcome.html)
+- [PyMC developers](https://github.com/pymc-devs/pymc)
 
 ## License
 https://coderefinery.github.io/github-without-command-line/doi/#step-2-activate-the-repository-on-zenodo-sandbox
