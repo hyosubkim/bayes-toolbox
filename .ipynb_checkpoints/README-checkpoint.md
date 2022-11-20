@@ -23,8 +23,7 @@ Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear
 # Call your BST function and return the PyMC model and InferenceData objects
 model, idata = bst.hierarchical_regression(df["x"], df["y"], df["subj"], acceptance_rate=0.95)
 ```
-
-Before, it would take *many* more lines of code. 
+Before, this would have taken *many* more lines of code. 
 
 
 ## Dependencies
@@ -38,9 +37,9 @@ Some of the main libraries used in this project:
 - seaborn
 
 If you're running Mac OSX, and want to ensure you can run everything right out of the box, you may want to install a new virtual environment with all of the necessary dependencies as well. To do that, make sure you're in the root directory and type the following conda command in the Terminal:
-
+```
 $ conda env create --name bayes_toolbox --file environment.yml
-
+```
 You can name your environment whatever you like, it doesn't have to be "bayes_toolbox". 
 
 If you're on a different OS and want to replicate this environment, read the "Export your environment" section of this [page](https://goodresearch.dev/setup.html). 
@@ -51,9 +50,9 @@ To make sure you can access the correct kernel from a Jupyter notebook, read thi
 The `BEST`  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 [article](https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf) by John Kruschke) in `examples` is a good place to see how BST can be used to make Bayesian analyses more convenient. I've adapted the [notebook](https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html) of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in the other example notebooks.
 
 To access all of the functions, you can simply copy `bayesian_stats.py` in the `src` folder into your own analysis script. If you want to use it as a package, you can clone this repo and then pip install the package from the Terminal. Make sure you are in the correct directory and then at the prompt type in:
-
+```
 $ pip install -e .
-
+```
 Once installed locally, you can access it from any directory. When you import your packages, add the following line:
 
 ```python
@@ -80,7 +79,7 @@ For a more weapons-grade Bayesian statistical modeling interface, check out:
 - [Bambi](https://github.com/bambinos/bambi): BAyesian Model-Building Interface (BAMBI) in Python.
 
 ## Acknowledgments
-Thanks to the following people for openly sharing their knowledge:
+Thanks to the following people for generously sharing their knowledge:
 - [John Kruschke](https://jkkweb.sitehost.iu.edu/)
 - [Richard McElreath](https://xcelab.net/rm/)
 - [Jordi Warmenhoven](https://github.com/JWarmenhoven)
