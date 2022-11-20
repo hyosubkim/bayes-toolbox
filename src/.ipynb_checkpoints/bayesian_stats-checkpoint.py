@@ -75,118 +75,6 @@ def is_standardized(X, eps=0.0001):
         return (X.mean()**2 < eps) & ((X.std() - 1)**2 < eps)
 
     
-def BEST_paired(y1, y2=None, n_draws=1000):
-    """BEST procedure on single sample or paired samples. 
-    
-    Args: 
-        y1 (ndarray/Series): Either single sample or difference scores. 
-        y2 (ndarray/Series): (Optional) If provided, represents the paired 
-          sample (i.e., y2 elements are in same order as y1).
-    Returns: 
-        PyMC Model and InferenceData objects.
-    """
-    
-    # Check to see if y2 was entered. If so, then this means the
-    # goal is to compare difference scores on a within subjects variable 
-    # (e.g., block). Otherwise, we are comparing location parameter to zero.
-    if y2 is None:
-        pass
-    else:
-        assert len(y1) == len(y2), f"There must be equal numbers of observations."
-        # Convert pre and post to difference scores.
-        y = y1 - y2
-    
-    # Calculate pooled empirical mean and SD of data to scale hyperparameters
-    mu_y = y.mean()
-    sigma_y = y.std()
-                                                                     
-    with pm.Model() as model:
-        # Define priors
-        mu = pm.Normal('mu', mu=mu_y, sigma=sigma_y * 10)
-        sigma = pm.Uniform('sigma', sigma_y / 10, sigma_y * 10)
-        nu_minus1 = pm.Exponential('nu_minus_one', 1 / 29)
-        nu = pm.Deterministic('nu', nu_minus1 + 1)
-        
-        # Define likelihood
-        likelihood = pm.StudentT('likelihood', nu=nu, mu=mu, sigma=sigma, observed=y)
-        
-        # Standardized effect size
-        effect_size = pm.Deterministic("effect_size", mu / sigma)
-
-        # Sample from posterior
-        idata = pm.sample(draws=n_draws)
-        
-    return model, idata
-
-
-# def BEST(y, group, n_draws=1000):
-#     """Implementation of John Kruschke's BEST test.
-    
-#     Compares outcomes from two groups and estimates parameters.
-    
-#     Args:
-#         y (ndarray/Series): The metric outcome variable.
-#         group: The grouping variable providing that indexes into y.
-#         n_draws: Number of random samples to draw from the posterior.
-    
-#     Returns: 
-#         PyMC Model and InferenceData objects.
-#     """
-    
-#     # Convert grouping variable to categorical dtype if it is not already
-#     if pd.api.types.is_categorical_dtype(group):
-#         pass
-#     else:
-#         group = group.astype('category')
-        
-#     # Extract group levels and make sure there are only two
-#     level = group.cat.categories
-#     assert len(level) == 2, f"Expected two groups but got {len(level)}."
-    
-#     # Split observations by group
-#     y_group1 = y[group==level[0]]
-#     y_group2 = y[group==level[1]]
-    
-#     # Calculate pooled empirical mean and SD of data to scale hyperparameters
-#     mu_y = y.mean()
-#     sigma_y = y.std()
-    
-#     # Arbitrarily set hyperparameters to the pooled empirical mean of data and 
-#     # twice pooled empirical SD, which applies very diffuse info to these 
-#     # quantities and does not favor one or the other a priori
-#     mu_m = mu_y
-#     mu_s = sigma_y * 2
-                                                                     
-#     with pm.Model() as model:
-#         # Define priors
-#         group1_mean = pm.Normal("group1_mean", mu=mu_m, sigma=mu_s)
-#         group2_mean = pm.Normal("group2_mean", mu=mu_m, sigma=mu_s)
-#         group1_std = pm.Uniform("group1_std", lower=sigma_y / 10, upper=sigma_y * 10)
-#         group2_std = pm.Uniform("group2_std", lower=sigma_y / 10, upper=sigma_y * 10)
-        
-#         # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition of 1 is to shift the
-#         # distribution so that the range of possible values of nu are 1 to infinity (with mean of 30).
-#         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
-#         nu = pm.Deterministic("nu", nu_minus_one + 1)
-#         nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
-        
-#         # Define likelihood
-#         likelihood1 = pm.StudentT("group1", nu=nu, mu=group1_mean, sigma=group1_std, observed=y_group1)
-#         likelihood2 = pm.StudentT("group2", nu=nu, mu=group2_mean, sigma=group2_std, observed=y_group2)
-        
-#         # Contrasts of interest
-#         diff_of_means = pm.Deterministic("difference of means", group1_mean - group2_mean)
-#         diff_of_stds = pm.Deterministic("difference of stds", group1_std - group2_std)
-#         effect_size = pm.Deterministic(
-#             "effect size", diff_of_means / np.sqrt((group1_std**2 + group2_std**2) / 2)
-#         )
-        
-#         # Sample from posterior
-#         idata = pm.sample(draws=n_draws)
-        
-#     return model, idata
-
-
 def BEST(y, group, n_draws=1000):
     """Implementation of John Kruschke's BEST test.
     
@@ -240,6 +128,50 @@ def BEST(y, group, n_draws=1000):
             "effect size", diff_of_means / np.sqrt((group_std[0]**2 + group_std[1]**2) / 2)
         )
         
+        # Sample from posterior
+        idata = pm.sample(draws=n_draws)
+        
+    return model, idata
+
+
+def BEST_paired(y1, y2=None, n_draws=1000):
+    """BEST procedure on single sample or paired samples. 
+    
+    Args: 
+        y1 (ndarray/Series): Either single sample or difference scores. 
+        y2 (ndarray/Series): (Optional) If provided, represents the paired 
+          sample (i.e., y2 elements are in same order as y1).
+    Returns: 
+        PyMC Model and InferenceData objects.
+    """
+    
+    # Check to see if y2 was entered. If so, then this means the
+    # goal is to compare difference scores on a within subjects variable 
+    # (e.g., block). Otherwise, we are comparing location parameter to zero.
+    if y2 is None:
+        pass
+    else:
+        assert len(y1) == len(y2), f"There must be equal numbers of observations."
+        # Convert pre and post to difference scores.
+        y = y1 - y2
+    
+    # Calculate pooled empirical mean and SD of data to scale hyperparameters
+    mu_y = y.mean()
+    sigma_y = y.std()
+                                                                     
+    with pm.Model() as model:
+        # Define priors
+        mu = pm.Normal('mu', mu=mu_y, sigma=sigma_y * 10)
+        sigma = pm.Uniform('sigma', sigma_y / 10, sigma_y * 10)
+        nu_minus1 = pm.Exponential('nu_minus_one', 1 / 29)
+        nu = pm.Deterministic('nu', nu_minus1 + 1)
+        
+        # Define likelihood
+        likelihood = pm.StudentT('likelihood', nu=nu, mu=mu, sigma=sigma, observed=y)
+        
+        # Standardized effect size
+        effect_size = pm.Deterministic("effect_size", mu / sigma)
+
         # Sample from posterior
         idata = pm.sample(draws=n_draws)
         
@@ -322,6 +254,8 @@ def hierarchical_regression(x, y, subj, n_draws=1000, acceptance_rate=0.9):
     # Convert subject variable to categorical dtype if it is not already
     subj_idx, subj_levels, n_subj = parse_categorical(subj)
     
+    # Taking advantage of the label-based indexing provided by xarray. See:
+    # https://www.pymc.io/projects/docs/en/stable/learn/core_notebooks/pymc_overview.html
     with pm.Model(coords={"subj": subj_levels}) as model:
         # Hyperpriors
         zbeta0 = pm.Normal('zbeta0', mu=0, tau=1/10**2)
@@ -459,7 +393,7 @@ def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
         sigma_y = pm.Uniform('sigma_y', sigma_y / 100, sigma_y * 10)
         likelihood = pm.Normal('likelihood', a0 + a[x_vals], sigma=sigma_y, observed=y)
 
-        # Convert a0, a to sum-to-zero b0,b 
+        # Convert a0, a to sum-to-zero b0, b 
         m = pm.Deterministic('m', a0 + a)
         b0 = pm.Deterministic('b0', at.mean(m))
         b = pm.Deterministic('b', m - b0) 
@@ -498,7 +432,7 @@ def hierarchical_bayesian_ancova(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma
         return model, idata
     
     
-def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000):
+def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9):
     """
     
     """
@@ -528,7 +462,7 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000):
         b = pm.Deterministic('b', m - b0) 
         
         # Initialization argument is necessary for sampling to converge
-        idata = pm.sample(draws=n_draws, init='advi+adapt_diag')
+        idata = pm.sample(draws=n_draws, init='advi+adapt_diag', target_accept=acceptance_rate)
 
         return model, idata
     

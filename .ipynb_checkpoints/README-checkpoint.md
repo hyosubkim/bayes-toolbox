@@ -65,6 +65,17 @@ If you're just starting off with Bayesian statistics, the two best introductory 
 ## Notice any bugs or have suggestions?
 I welcome your suggestions for improvement. Feel free to open a new issue through GitHub. However, please keep in mind that I am a full-time academic [researcher](https://osf.io/y75ud/wiki/home/) and not a software developer, so I may not have the time or the know-how to implement even moderately complicated suggestions. 
 
+## Models that are currently included and validated (frequentist analogue in parentheses)
+- Comparison of two groups (independent samples t-test)
+- Comparsion of single or paired samples (paired t-test)
+- Simple linear regression
+- Multiple regression
+- Multi-level (hierarchical) linear regression
+- Hierarchical (multi-level) model of metric outcome with single categorical predictor (one-way ANOVA)
+- Hierarchical (multi-level) model of metric outcome with single categorical and single metric predictors (ANCOVA)
+- Hierarchical (multi-level) model of metric outcome with two categorical predictors (two-way ANOVA)
+- Hierarchical (multi-level) model of metric outcome with multiple categorical predictors and repeated measures (mixed-model ANOVA)
+
 ## Are there any plans to further develop BST?
 Yes! I plan to add the following in the near future:
 

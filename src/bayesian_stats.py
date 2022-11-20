@@ -393,7 +393,7 @@ def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
         sigma_y = pm.Uniform('sigma_y', sigma_y / 100, sigma_y * 10)
         likelihood = pm.Normal('likelihood', a0 + a[x_vals], sigma=sigma_y, observed=y)
 
-        # Convert a0, a to sum-to-zero b0,b 
+        # Convert a0, a to sum-to-zero b0, b 
         m = pm.Deterministic('m', a0 + a)
         b0 = pm.Deterministic('b0', at.mean(m))
         b = pm.Deterministic('b', m - b0) 
@@ -432,7 +432,7 @@ def hierarchical_bayesian_ancova(x, x_met, y, mu_x_met, mu_y, sigma_x_met, sigma
         return model, idata
     
     
-def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000):
+def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9):
     """
     
     """
@@ -445,6 +445,7 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000):
         sigma_a = pm.Gamma('sigma_a', alpha=a_shape, beta=a_rate)
         a0 = pm.Normal('a0', mu=mu_y, sigma=sigma_y * 10)
         a = pm.Normal('a', 0.0, sigma=sigma_a, dims="groups")
+        
         # Hyperparameters 
         sigma_y_sd = pm.Gamma('sigma_y_sd', alpha=a_shape, beta=a_rate)
         sigma_y_mode = pm.Gamma("sigma_y_mode", alpha=a_shape, beta=a_rate)
@@ -462,7 +463,7 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000):
         b = pm.Deterministic('b', m - b0) 
         
         # Initialization argument is necessary for sampling to converge
-        idata = pm.sample(draws=n_draws, init='advi+adapt_diag')
+        idata = pm.sample(draws=n_draws, init='advi+adapt_diag', target_accept=acceptance_rate)
 
         return model, idata
     
