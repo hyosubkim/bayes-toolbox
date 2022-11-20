@@ -104,7 +104,7 @@ Thank you to the following people for generously sharing their work and knowledg
 I have tried my best to give credit for your work wherever appropriate, but please let me know if you would like your work attributed in a different manner. 
 
 ## License
-https://coderefinery.github.io/github-without-command-line/doi/#step-2-activate-the-repository-on-zenodo-sandbox
+This work is distributed under a [MIT license](https://github.com/hyosubkim/bayesian-statistics-toolbox/blob/main/LICENSE). 
 
 ## Citations
 https://citation-file-format.github.io/
