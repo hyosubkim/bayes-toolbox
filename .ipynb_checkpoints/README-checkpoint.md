@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
+
 # Bayesian Statistics Toolbox (BST) 
 
 ## What is this?
