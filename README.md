@@ -70,7 +70,7 @@ I welcome your suggestions for improvement. Please do so by opening a new issue 
 
 ## Models that are currently included and validated (frequentist analogue in parentheses)
 - Comparison of two groups (independent samples t-test)
-- Comparsion of single or paired samples (paired t-test)
+- Comparison of single or paired samples (paired t-test)
 - Simple linear regression
 - Multiple regression
 - Multi-level (hierarchical) linear regression for modeling group- and individual-specific parameters
@@ -78,16 +78,16 @@ I welcome your suggestions for improvement. Please do so by opening a new issue 
 - Hierarchical (multi-level) model of metric outcome with single categorical and single metric predictors (ANCOVA)
 - Hierarchical (multi-level) model of metric outcome with two categorical predictors (two-way ANOVA)
 - Hierarchical (multi-level) model of metric outcome with multiple categorical predictors and repeated measures (mixed-model ANOVA)
+- Logistic regression models incorporating categorical or metric predictors
 
 ## Are there any plans to further develop BST?
 Yes, there will be much more coming soon! I plan to add the following in the near future:
 
-- Bayesian logistic regression 
 - Bayes Factors
 - Bayesian meta-analysis 
 - Bayesian spectral analysis
 - Model selection
-- Incorporating prior and posterior predictive checks into the examples
+- Incorporating prior and posterior predictive checks into all of the examples (currently, only logistic regression notebook has example of prior predictive check)
 - Incorporating maximum entropy priors 
 
 ## Other related Python projects 
