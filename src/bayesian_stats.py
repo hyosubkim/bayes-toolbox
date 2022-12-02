@@ -791,21 +791,21 @@ def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
      
     # Equation 20.3
     m = m_BxW.mean(dim=["between_subj", "within_subj"])
-    b0 = m
+    posterior = posterior.assign(b0 = m)
 
     # Equation 20.4
-    bB = m_B - m
+    posterior = posterior.assign(bB = m_B - m)
 
     # Equation 20.5
-    bW = m_W - m
+    posterior = posterior.assign(bW = m_W - m)
 
     # Equation 20.6
-    bBxW = m_BxW - m_B - m_W + m
+    posterior = posterior.assign(bBxW = m_BxW - m_B - m_W + m)
 
-    # Equation 20.7
-    bS = m_S - m_B
+    # Equation 20.7 (removing between_subj dimension)
+    posterior = posterior.assign(bS=(["subj", "sample"], (m_S - m_B).mean(dim="between_subj").data))
     
-    return b0, bB, bW, bBxW, bS
+    return posterior
 
 
 def bayesian_logreg_cat_predictors(X, y, n_draws=1000):
