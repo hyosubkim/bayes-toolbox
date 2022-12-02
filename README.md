@@ -29,15 +29,15 @@ Some of the main libraries used in this project:
 
 ## How do I get started?
 *(Recommended)*   
-If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning this repo you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory and type the following conda command in the Terminal (I strongly recommend [Anaconda](https://www.anaconda.com/) to install Python and the conda utility on your computer):
+If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning this repo you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory of this repository (i.e., `bayesian-statistics-toolbox`) and type the following conda command in the Terminal (I strongly recommend [Anaconda](https://www.anaconda.com/) to install Python and the conda utility on your computer):
 ```
-$ conda env create --name bayes_toolbox --file environment.yml
+conda env create --name bayes_toolbox --file environment.yml
 ```
 You can name your environment whatever you like, it doesn't have to be "bayes_toolbox". 
 
-**To access all of the functions, pip install the package from the Terminal. Make sure you are in the root directory for this repository and then at the prompt type in:**
+**To access all of the functions, pip install the package from the Terminal. Again, make sure you are in the root directory for this repository and then at the prompt type in:**
 ```
-$ pip install -e .
+pip install -e .
 ```
 
 Once installed locally, you can access it from any directory. When you import your packages, add the following line:
@@ -48,7 +48,17 @@ import src.bayesian_stats as bst
 
 If you're on a different OS and want to replicate this environment, read the "Export your environment" section of this [page](https://goodresearch.dev/setup.html). 
 
-To make sure you can access the correct kernel from a Jupyter notebook, read this [link](https://janakiev.com/blog/jupyter-virtual-envs/).
+To access the correct kernel from a Jupyter notebook, you must manually add the kernel for your new virtual environment "bayes_toolbox" (or whatever you named it). To do so, you first need to install [ipykernel](https://github.com/ipython/ipykernel):
+```
+pip install --user ipykernel
+```
+
+Next, add your virtual environment to Jupyter:
+```
+python -m ipykernel install --user --name=MYENV
+```
+Use whatever you named your virtual environment in place of `MYENV`. That should be all that's necessary in order to choose your new virtual environment as a kernel from your Jupyter notebook. For more details, read this [page](https://janakiev.com/blog/jupyter-virtual-envs/). 
+
 
 ## How do I learn to use BST?
 The `BEST`  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 [article](https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf) by John Kruschke) in `examples` is a good place to see how BST can be used to make Bayesian analyses more convenient. I've adapted the [notebook](https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html) of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's [repo](https://github.com/JWarmenhoven/DBDA-python).
@@ -66,7 +76,7 @@ Before, this would have taken *many* more lines of code.
 If you're just starting off with Bayesian statistics, the two best introductory textbooks I know of are ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0) by John Kruschke and ["Statistical Rethinking"](https://xcelab.net/rm/statistical-rethinking/) by Richard McElreath. If you already have some background in Bayesian inference but are new to Python and/or PyMC, the PyMC developers have some great example notebooks [here](https://www.pymc.io/projects/examples/en/latest/gallery.html).
 
 ## Notice any bugs or have suggestions?
-I welcome your suggestions for improvement. Please do so by opening a new issue through GitHub. However, as I am an academic [researcher](https://osf.io/y75ud/wiki/home/) and not a software developer, I can promise to give your suggestion full consideration, but I can't guarantee if and when it will get implemented. 
+I welcome your suggestions for improvement. Please do so by opening a new issue through GitHub. However, as I am an academic [researcher](https://osf.io/y75ud/wiki/home/) and not a full-time software developer, I can promise to give your suggestion full consideration, but I can't guarantee if and when it will get implemented. 
 
 ## Models that are currently included and validated (frequentist analogue in parentheses)
 - Comparison of two groups (independent samples t-test)
