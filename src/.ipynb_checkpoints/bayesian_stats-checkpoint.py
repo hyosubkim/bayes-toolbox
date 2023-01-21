@@ -791,18 +791,65 @@ def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
      
     # Equation 20.3
     m = m_BxW.mean(dim=["between_subj", "within_subj"])
-    b0 = m
+    posterior = posterior.assign(b0 = m)
 
     # Equation 20.4
-    bB = m_B - m
+    posterior = posterior.assign(bB = m_B - m)
 
     # Equation 20.5
-    bW = m_W - m
+    posterior = posterior.assign(bW = m_W - m)
 
     # Equation 20.6
-    bBxW = m_BxW - m_B - m_W + m
+    posterior = posterior.assign(bBxW = m_BxW - m_B - m_W + m)
 
-    # Equation 20.7
-    bS = m_S - m_B
+    # Equation 20.7 (removing between_subj dimension)
+    posterior = posterior.assign(bS=(["subj", "sample"], (m_S - m_B).mean(dim="between_subj").data))
     
-    return b0, bB, bW, bBxW, bS
+    return posterior
+
+
+def bayesian_logreg_cat_predictors(X, y, n_draws=1000):
+    
+    # Standardize the predictor variable(s)
+    zX, mu_X, sigma_X = standardize(X)
+    
+    with pm.Model(coords={"predictors": X.columns.values}) as model:
+        # Set  priors
+        zbeta0 = pm.Normal("zbeta0", mu=0, sigma=2)
+        zbetaj = pm.Normal("zbetaj", mu=0, sigma=2, dims="predictors")
+        
+        p = pm.invlogit(zbeta0 + pm.math.dot(zX, zbetaj))
+        
+        # Define likelihood function
+        likelihood = pm.Bernoulli("likelihood", p, observed=y)
+        
+        # Transform parameters to original scale
+        beta0 = pm.Deterministic("beta0", (zbeta0 - pm.math.sum(zbetaj * mu_X / sigma_X)))
+        betaj = pm.Deterministic("betaj", zbetaj / sigma_X, dims="predictors")                         
+        
+        # Sample from the posterior
+        idata = pm.sample(draws=n_draws)
+        
+        return model, idata
+    
+
+def bayesian_logreg_subj_intercepts(subj, X, y, n_draws=1000):
+    
+    # Factorize subj IDs and treatment variable
+    subj_idx, subj_levels, n_subj = parse_categorical(subj)
+    treatment_idx, treatment_levels, n_treatment = parse_categorical(X)
+    
+    with pm.Model(coords={"subj": subj_levels, "treatment": treatment_levels}) as model:
+        # Set priors
+        a = pm.Normal("a", 0.0, 1.5, dims="subj")
+        b = pm.Normal("b", 0.0, 0.5, dims="treatment")
+
+        p = pm.Deterministic("p", pm.math.invlogit(a[subj_idx] + b[treatment_idx]))
+        
+        # Define likelihood function (in this case, observations are 0 or 1)
+        likelihood = pm.Binomial("likelihood", 1, p, observed=y)
+        
+        # Draw samples from the posterior
+        idata = pm.sample(draws=n_draws)
+        
+        return model, idata
