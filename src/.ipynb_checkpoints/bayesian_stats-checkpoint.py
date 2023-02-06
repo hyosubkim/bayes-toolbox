@@ -178,7 +178,7 @@ def BEST_paired(y1, y2=None, n_draws=1000):
     # goal is to compare difference scores on a within subjects variable 
     # (e.g., block). Otherwise, we are comparing location parameter to zero.
     if y2 is None:
-        pass
+        y = y1
     else:
         assert len(y1) == len(y2), f"There must be equal numbers of observations."
         # Convert pre and post to difference scores.
