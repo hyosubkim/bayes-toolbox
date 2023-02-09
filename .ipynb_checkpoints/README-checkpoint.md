@@ -75,8 +75,9 @@ Before, this would have taken *many* more lines of code.
 ## Where can I get more help?
 If you're just starting off with Bayesian statistics, the two best introductory textbooks I know of are ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0) by John Kruschke and ["Statistical Rethinking"](https://xcelab.net/rm/statistical-rethinking/) by Richard McElreath. If you already have some background in Bayesian inference but are new to Python and/or PyMC, the PyMC developers have some great example notebooks [here](https://www.pymc.io/projects/examples/en/latest/gallery.html).
 
-## Notice any bugs or have suggestions?
-I welcome your suggestions for improvement. Please do so by opening a new issue through GitHub. However, as I am an academic [researcher](https://osf.io/y75ud/wiki/home/) and not a full-time software developer, I can promise to give your suggestion full consideration, but I can't guarantee if and when it will get implemented. 
+## How to contribute to BST
+
+I always welcome your suggestions for improvement, including improvements to the code, reporting bugs, and suggestions for new functionality. You may want to do so by first opening a new Github Issue prior to a pull request. 
 
 ## Models that are currently included and validated (frequentist analogue in parentheses)
 - Comparison of two groups (independent samples t-test)
