@@ -1,5 +1,6 @@
 .DS_Store
 .ipynb_checkpoints
 *.egg-info
-*.egg-info
 __pycache__/
+*.egg-info/
+
