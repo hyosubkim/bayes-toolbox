@@ -18,11 +18,10 @@ Please note that the models all utilize fairly uninformative, diffuse priors, wh
 ## Dependencies
 Some of the main libraries used in this project:
 
-- [aesara](https://github.com/aesara-devs/aesara)
 - [ArviZ](https://arviz-devs.github.io/arviz/)
 - [NumPy](https://numpy.org/)
 - [pandas](https://pandas.pydata.org/)
-- [PyMC 4.0](https://www.pymc.io/welcome.html)
+- [PyMC](https://www.pymc.io/welcome.html)
 - [seaborn](https://seaborn.pydata.org/)
 - [Xarray](https://docs.xarray.dev/en/stable/)
 
