@@ -76,7 +76,7 @@ If you're just starting off with Bayesian statistics, the two best introductory 
 
 ## How to contribute to BST
 
-I always welcome your suggestions for improvement, including improvements to the code, reporting bugs, and suggestions for new functionality. You may want to do so by first opening a new Github Issue prior to a pull request. 
+Thank you for your interest in contributing to BST! Go [here](https://github.com/hyosubkim/bayesian-statistics-toolbox/blob/main/CONTRIBUTING.md) for some contributing guidelines.  
 
 ## Models that are currently included and validated (frequentist analogue in parentheses)
 - Comparison of two groups (independent samples t-test)
