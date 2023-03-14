@@ -1,2 +1,8 @@
 site_name: bayesian-statistics-toolbox
 site_url: https://example.com/
+nav:
+    - Home: index.md
+    - Getting Started: getting-started.md
+    - Tutorials: tutorials.md
+    - How to Contribute: how-to-contribute.md
+theme: readthedocs
