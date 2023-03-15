@@ -6,4 +6,5 @@ nav:
     - Tutorials: tutorials.md
     - Future Plans: future-plans.md
     - How to Contribute: how-to-contribute.md
+    - to delete: to-delete.md
 theme: readthedocs
