@@ -49,7 +49,8 @@ How to Contribute
 - Logistic regression models incorporating categorical or metric predictors
 
 ## Other related Python projects 
-For a more weapons-grade Bayesian statistical modeling interface, check out:
+For a more weapons-grade Bayesian statistical modeling interface, check out:  
+
 - [Bambi](https://github.com/bambinos/bambi): BAyesian Model-Building Interface (BAMBI) in Python.
 
 ## Citing BST
