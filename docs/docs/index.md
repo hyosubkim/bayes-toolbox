@@ -29,13 +29,28 @@ Some of the main libraries used in this project:
 
 ---
 **NOTE**      
-Use the links in the navigation bar above, the content pages below, or the searchbar on the left to get started!  
+Use the links in the navigation bar to the left, the search bar in the upper left, or the content pages below to get started!  
 
 ---
 Getting Started  
 Tutorials  
 How to Contribute
 
+## Models that are currently included and validated (frequentist analogue in parentheses)
+- Comparison of two groups (independent samples t-test)
+- Comparison of single or paired samples (paired t-test)
+- Simple linear regression
+- Multiple regression
+- Multi-level (hierarchical) linear regression for modeling group- and individual-specific parameters
+- Hierarchical (multi-level) model of metric outcome with single categorical predictor (one-way ANOVA)
+- Hierarchical (multi-level) model of metric outcome with single categorical and single metric predictors (ANCOVA)
+- Hierarchical (multi-level) model of metric outcome with two categorical predictors (two-way ANOVA)
+- Hierarchical (multi-level) model of metric outcome with multiple categorical predictors and repeated measures (mixed-model ANOVA)
+- Logistic regression models incorporating categorical or metric predictors
+
+## Other related Python projects 
+For a more weapons-grade Bayesian statistical modeling interface, check out:
+- [Bambi](https://github.com/bambinos/bambi): BAyesian Model-Building Interface (BAMBI) in Python.
 
 ## Citing BST
 If you use BST and would like to cite, please use one of the following:
