@@ -1,6 +1,6 @@
 ## How do I get started?
 *(Recommended)*   
-If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning this repo you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory of this repository (i.e., `bayesian-statistics-toolbox`) and type the following conda command in the Terminal (I strongly recommend [Anaconda](https://www.anaconda.com/) to install Python and the conda utility on your computer):
+If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning [this repo](https://github.com/hyosubkim/bayesian-statistics-toolbox) you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory of this repository (i.e., `bayesian-statistics-toolbox`) and type the following conda command in the Terminal (I strongly recommend [Anaconda](https://www.anaconda.com/) to install Python and the conda utility on your computer):
 ```
 conda env create --name bayes_toolbox --file environment.yml
 ```
