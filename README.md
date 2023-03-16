@@ -52,5 +52,5 @@ I have tried my best to give credit for your work wherever appropriate, but plea
 
 ## Contributors
 
-See the AUTHORS.md file for a regularly updated list of contributors. 
+See the CONTRIBUTORS.md file for a regularly updated list of contributors. 
 
