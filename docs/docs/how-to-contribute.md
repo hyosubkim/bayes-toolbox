@@ -4,7 +4,7 @@ Thank you for your interest in contributing to BST! This is an open-source proje
 
 **Did you find a bug?**
 
-- Please check the [Issues] page (https://github.com/hyosubkim/bayesian-statistics-toolbox/issues) first to see if it has already been reported. 
+- Please check the [Issues page](https://github.com/hyosubkim/bayesian-statistics-toolbox/issues) first to see if it has already been reported. 
 - If the bug has not been reported, please open a new Issue. 
 
 **Did you write a patch that fixes a bug?**
