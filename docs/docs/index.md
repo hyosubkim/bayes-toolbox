@@ -34,7 +34,7 @@ Use the links in the navigation bar to the left, the search bar in the upper lef
 ---
 [Getting Started](https://hyosubkim.github.io/bayesian-statistics-toolbox/getting-started/)  
 [Tutorials](https://hyosubkim.github.io/bayesian-statistics-toolbox/tutorials/)  
-[Future Plans](https://hyosubkim.github.io/bayesian-statistics-toolbox/future-plans/)
+[Future Plans](https://hyosubkim.github.io/bayesian-statistics-toolbox/future-plans/)     
 [How to Contribute](https://hyosubkim.github.io/bayesian-statistics-toolbox/how-to-contribute/)
 
 ## Models that are currently included and validated (frequentist analogue in parentheses)
