@@ -631,7 +631,97 @@ def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
     
     return post
     
+
+def bayesian_oneway_rm_anova(x1, x_s, y, tune=2000, n_draws=1000):
+    """Bayesian analogue of RM ANOVA.
     
+    Models instance of outcome resulting from two categorical predictors,
+    x1 and x_s (subject identifier). This model assumes each subject 
+    contributes only one value to each cell. Therefore, there is no
+    modeling of an interaction effect (see Kruschke Ch. 20.5).
+    
+    Args:
+        x1: First categorical predictor variable.
+        x_s: Second categorical predictor variable - subject.
+        y: The outcome variable.
+    
+    Returns:
+        PyMC Model and InferenceData objects.
+    """
+    mu_y = y.mean()
+    sigma_y = y.std()
+
+    a_shape, a_rate = gamma_shape_rate_from_mode_sd(sigma_y / 2 , 2 * sigma_y)
+    x1_vals, levels1, n_levels1 = parse_categorical(x1)
+    x_s_vals, levels_s, n_levels_s = parse_categorical(x_s)
+
+    with pm.Model(coords={"factor1": levels1, "factor_subj": levels_s}) as model:
+        # To understand the reparameterization, see:
+        # http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/ 
+        a0_tilde = pm.Normal('a0_tilde', mu=0, sigma=1)
+        a0 = pm.Deterministic('a0', mu_y + sigma_y * 5 * a0_tilde)
+
+        sigma_a1 = pm.Gamma('sigma_a1', a_shape, a_rate)
+        # sigma_a1 = 5
+        a1_tilde = pm.Normal('a1_tilde', mu=0, sigma=1, dims="factor1")
+        a1 = pm.Deterministic('a1', 0.0 + sigma_a1*a1_tilde)
+
+        sigma_a_s = pm.Gamma('sigma_a_s', a_shape, a_rate)
+        a_s_tilde = pm.Normal('a_s_tilde', mu=0, sigma=1, dims="factor_subj")
+        a_s = pm.Deterministic('a_s', 0.0 + sigma_a_s * a_s_tilde)
+
+        mu = a0 + a1[x1_vals] + a_s[x_s_vals] 
+        sigma = pm.Uniform('sigma', sigma_y / 100, sigma_y * 10)
+        
+        # Define the likelihood function
+        likelihood = pm.Normal('likelihood', mu, sigma=sigma, observed=y) 
+        
+        # Sample from the posterior
+        idata = pm.sample(draws=n_draws, target_accept=0.95)
+        
+        return model, idata
+    
+
+def oneway_rm_anova_convert_to_sum_to_zero(idata, x1, x_s):
+    """Returns coefficients that obey sum-to-zero constraint.
+    
+    Args:
+        idata: InferenceData object.
+        x1: First categorical predictor variable.
+        x2: Second categorical predictor variable.
+    
+    Returns:
+        Posterior in the form of InferenceData object. 
+    
+    """
+    # Extract posterior probabilities and stack your chains
+    # post = az.extract(idata.posterior)
+    post = az.extract_dataset(idata.posterior)
+
+    
+    _, _, n_levels_x1 = parse_categorical(x1)
+    _, _, n_levels_x_s = parse_categorical(x_s)
+    
+    # Add variables
+    post = post.assign(m=(["factor1", "factor_subj", "sample"], np.zeros((n_levels_x1, n_levels_x_s, len(post['sample'])))))
+    post = post.assign(b0=(["sample"], np.zeros(len(post["sample"]))))
+    post = post.assign(b1=(["factor1", "sample"], np.zeros((n_levels_x1, len(post["sample"])))))
+    post = post.assign(b_s=(["factor_subj", "sample"], np.zeros((n_levels_x_s, len(post["sample"])))))
+    
+    # Transforming the trace data to sum-to-zero values. First, calculate
+    # predicted mean values based on different levels of predictors.
+    for (j1, j2) in np.ndindex(n_levels_x1, n_levels_x_s):
+            post.m[j1, j2] =  (post['a0'] +
+                         post['a1'][j1, :] +
+                         post['a_s'][j2, :])
+
+    post["b0"] = post.m.mean(dim=["factor1", "factor_subj"])
+    post["b1"] = post.m.mean(dim="factor_subj") - post.b0
+    post["b_s"] = post.m.mean(dim="factor1") - post.b0
+    
+    return post
+
+
 def bayesian_mixed_model_anova(between_subj_var, within_subj_var, subj_id, y, n_samples=1000):
     """Performs Bayesian analogue of mixed model (split-plot) ANOVA.
     
