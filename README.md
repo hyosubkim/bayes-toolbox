@@ -12,6 +12,8 @@ The documentation for `bayes-toolbox` is hosted [here](https://hyosubkim.github.
 
 ## Installation 
 
+|PyPI|
+
 See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/getting-started/) in the [documentation](https://hyosubkim.github.io/bayes-toolbox) for detailed instructions on how to install `bayes-toolbox`. 
 
 
