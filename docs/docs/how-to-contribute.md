@@ -1,10 +1,10 @@
 # Contributing Guidelines
 
-Thank you for your interest in contributing to BST! This is an open-source project and everyone is welcome to contribute to it. As this project evolves and grows in size and scope, these guidelines will also evolve. However, for now we have some general guidelines to follow. 
+Thank you for your interest in contributing to `bayes-toolbox`! This is an open-source project and everyone is welcome to contribute to it. As this project evolves and grows in size and scope, these guidelines will also evolve. However, for now we have some general guidelines to follow. 
 
 **Did you find a bug?**
 
-- Please check the [Issues page](https://github.com/hyosubkim/bayesian-statistics-toolbox/issues) first to see if it has already been reported. 
+- Please check the [Issues page](https://github.com/hyosubkim/bayes-toolbox/issues) first to see if it has already been reported. 
 - If the bug has not been reported, please open a new Issue. 
 
 **Did you write a patch that fixes a bug?**
@@ -14,8 +14,7 @@ Thank you for your interest in contributing to BST! This is an open-source proje
 
 **Do you have suggestions for a new feature?**
 
-- Please let us know by opening a new [Issue](https://github.com/hyosubkim/bayesian-statistics-toolbox/issues).
+- Please let us know by opening a new [Issue](https://github.com/hyosubkim/bayes-toolbox/issues).
 
 Thanks for reading, and hope you will join the project! 
 
--BST Team
