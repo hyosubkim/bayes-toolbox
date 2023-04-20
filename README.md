@@ -1,8 +1,8 @@
 [![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
 
-# bayes-toolbox (aka, Bayesian Statistics Toolbox [BST]) 
+# bayes-toolbox  
 
-bayes-toolbox is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. 
+`bayes-toolbox` (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. 
 
 
 ## Documentation
@@ -48,7 +48,6 @@ Thank you to the following people for generously sharing their work and knowledg
 - [PyMC developers](https://github.com/pymc-devs/pymc)
 - [ArviZ developers](https://www.arviz.org/en/latest/our_team.html)
 
-I have tried my best to give credit for your work wherever appropriate, but please let me know if you would like your work attributed in a different manner. 
 
 ## Contributors
 

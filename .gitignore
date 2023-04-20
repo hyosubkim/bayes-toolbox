@@ -5,3 +5,4 @@ __pycache__/
 *.egg-info/
 *.pyc
 docs/site
+_version.py
