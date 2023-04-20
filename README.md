@@ -17,7 +17,7 @@ See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/ge
 
 ## Citing bayes-toolbox
 
-If you use `bayes-toolbox` in your work, please cite use one of the following:
+If you use `bayes-toolbox` in your work, please cite using one of the following:
 
 ***APA format:***
 - Kim, H. E. (2022). Bayesian Statistics Toolbox (BST) (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.7339667
