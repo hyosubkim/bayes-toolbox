@@ -41,4 +41,4 @@ keywords = [
 "Bug Tracker" = "https://github.com/hyosubkim/bayes-toolbox/issues"
 
 [tool.setuptools_scm]
-write_to = "bayes-toolbox/_version.py"
+write_to = "bayes_toolbox/_version.py"
