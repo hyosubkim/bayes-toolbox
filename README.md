@@ -19,7 +19,7 @@ The recommended method of installing bayes-toolbox is with `pip`:
 pip install bayes_toolbox
 ```
 
-See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/getting-started/) in the [documentation](https://hyosubkim.github.io/bayes-toolbox) for detailed instructions on how to install `bayes-toolbox`. 
+See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/getting-started/) in the [documentation](https://hyosubkim.github.io/bayes-toolbox) for more detailed information. 
 
 
 ## Citing bayes-toolbox
