@@ -1,13 +1,15 @@
 [build-system]
 requires = [
     "setuptools>=61.0",
+    "setuptools_scm[toml]",
     "wheel >= 0.38",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayes-toolbox"
-version = "0.0.1"
+# version = "0.0.1"
+dynamic = ["version"]
 authors = [
   { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
 ]
@@ -37,3 +39,6 @@ keywords = [
 [project.urls]
 "Homepage" = "https://github.com/hyosubkim/bayes-toolbox"
 "Bug Tracker" = "https://github.com/hyosubkim/bayes-toolbox/issues"
+
+[tool.setuptools_scm]
+write_to = "bayes-toolbox/_version.py"
