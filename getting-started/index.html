@@ -47,6 +47,26 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Getting Started</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#recommended-pip">Recommended (pip)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#from-source-cloning-and-building">From source: Cloning and building</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#virtual-environment">Virtual environment</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#helpful-hints">Helpful hints</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#how-do-i-learn-to-use-bst">How do I learn to use BST?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example-syntax">Example syntax</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -85,19 +105,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="how-do-i-get-started">How do I get started?</h2>
-<p><em>(Recommended)</em> <br />
-If you're running Mac OSX, and want to ensure you can run everything right out of the box, after cloning <a href="https://github.com/hyosubkim/bayesian-statistics-toolbox">this repo</a> you can create a virtual environment with all of the necessary dependencies. To do that, make sure you're in the root directory of this repository (i.e., <code>bayesian-statistics-toolbox</code>) and type the following conda command in the Terminal (I strongly recommend <a href="https://www.anaconda.com/">Anaconda</a> to install Python and the conda utility on your computer):</p>
+                <h1 id="how-do-i-get-started">How do I get started?</h1>
+<h2 id="installation">Installation</h2>
+<h3 id="recommended-pip">Recommended (pip)</h3>
+<p>We recommend installing the latest stable version of <code>bayes_toolbox</code> with pip (from the Terminal):</p>
+<pre><code>pip install bayes_toolbox
+</code></pre>
+<h3 id="from-source-cloning-and-building">From source: Cloning and building</h3>
+<p>The latest development version of <code>bayes-toolbox</code> can be cloned from GitHub using <code>git</code>:</p>
+<pre><code>git clone git://github.com/hyosubkim/bayes-toolbox.git
+</code></pre>
+<p>To build and install the project (from the root directory, i.e., inside the cloned <code>bayes-toolbox</code> directory):</p>
+<pre><code>python3 -m pip install -e .
+</code></pre>
+<h2 id="dependencies">Dependencies</h2>
+<p><code>bayes_toolbox</code> has the following dependencies (all of which should be automatically imported with a pip installation):<br />
+- aesara<br />
+- arviz<br />
+- numpy<br />
+- pandas<br />
+- pymc  </p>
+<h3 id="virtual-environment">Virtual environment</h3>
+<p>You can create a virtual environment with all of the necessary dependencies. If you've cloned the <code>bayes-toolbox</code> repository, make sure you're in the root directory of the cloned repository (i.e., <code>bayes-toolbox</code>) and type the following conda command in the Terminal (<a href="https://www.anaconda.com/">Anaconda</a> is strongly recommended for installing Python and the conda utility on your computer):</p>
 <pre><code>conda env create --name bayes_toolbox --file environment.yml
 </code></pre>
-<p>You can name your environment whatever you like, it doesn't have to be "bayes_toolbox". </p>
-<p><strong>To access all of the functions, pip install the package from the Terminal. Again, make sure you are in the root directory for this repository and then at the prompt type in:</strong></p>
-<pre><code>pip install -e .
-</code></pre>
-<p>Once installed locally, you can access it from any directory. When you import your packages, add the following line:</p>
-<pre><code class="language-python">import src.bayesian_stats as bst
-</code></pre>
-<p>If you're on a different OS and want to replicate this environment, read the "Export your environment" section of this <a href="https://goodresearch.dev/setup.html">page</a>. </p>
+<p>Instead of <code>bayes_toolbox</code>, you may wish to give your environment a different name. </p>
+<p>If you're not using MacOSX and want to replicate this environment, read the "Export your environment" section of this <a href="https://goodresearch.dev/setup.html">page</a>. </p>
+<p>After cloning and installing <code>bayes-toolbox</code> locally, you can access it from any directory. </p>
+<h3 id="helpful-hints">Helpful hints</h3>
 <p>To access the correct kernel from a Jupyter notebook, you must manually add the kernel for your new virtual environment "bayes_toolbox" (or whatever you named it). To do so, you first need to install <a href="https://github.com/ipython/ipykernel">ipykernel</a>:</p>
 <pre><code>pip install --user ipykernel
 </code></pre>
@@ -106,11 +141,14 @@ If you're running Mac OSX, and want to ensure you can run everything right out o
 </code></pre>
 <p>Use whatever you named your virtual environment in place of <code>MYENV</code>. That should be all that's necessary in order to choose your new virtual environment as a kernel from your Jupyter notebook. For more details, read this <a href="https://janakiev.com/blog/jupyter-virtual-envs/">page</a>. </p>
 <h2 id="how-do-i-learn-to-use-bst">How do I learn to use BST?</h2>
-<p>The <code>BEST</code>  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 <a href="https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf">article</a> by John Kruschke) in the <code>examples</code> <a href="https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples">directory</a> is a good place to see how BST can be used to make Bayesian analyses more convenient. I've adapted the <a href="https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html">notebook</a> of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's <a href="https://github.com/JWarmenhoven/DBDA-python">repo</a>.</p>
+<p>The <code>BEST</code>  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 <a href="https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf">article</a> by John Kruschke) in the <code>examples</code> <a href="https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples">directory</a> is a good place to see how <code>bayes-toolbox</code> can be used to make Bayesian analyses simple to implement. I've adapted the <a href="https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html">notebook</a> of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's <a href="https://github.com/JWarmenhoven/DBDA-python">repo</a>.</p>
 <h2 id="example-syntax">Example syntax</h2>
 <p>Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, it looks like</p>
-<pre><code class="language-python"># Call your BST function and return the PyMC model and InferenceData objects
-model, idata = bst.hierarchical_regression(df[&quot;x&quot;], df[&quot;y&quot;], df[&quot;subj&quot;], acceptance_rate=0.95)
+<pre><code class="language-python"># Import the bayes-toolbox package 
+import bayes_toolbox.glm as bg
+
+# Call your bayes-toolbox function and return the PyMC model and InferenceData objects
+model, idata = bg.hierarchical_regression(df[&quot;x&quot;], df[&quot;y&quot;], df[&quot;subj&quot;], acceptance_rate=0.95)
 </code></pre>
 <p>Before, this would have taken <em>many</em> more lines of code. </p>
               
