@@ -1,0 +1,39 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel >= 0.38",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bayes-toolbox"
+version = "1.0.0"
+authors = [
+  { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
+]
+description = "A package for performing Bayesian analyses."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "aesara~=2.8.7",
+    "arviz~=0.13.0",
+    "numpy~=1.23.4",
+    "pandas~=1.5.1",
+    "pymc~=4.3.0",
+    "setuptools~=65.5.1"
+]
+keywords = [
+    "probabilistic-programming", 
+    "bayesian-inference",
+    "bayesian-statistics",
+    "statistics"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/hyosubkim/bayes-toolbox"
+"Bug Tracker" = "https://github.com/hyosubkim/bayes-toolbox/issues"
