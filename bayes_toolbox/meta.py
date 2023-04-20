@@ -38,6 +38,8 @@ import pymc as pm
 def meta_binary_outcome(z_t_obs, n_t_obs, z_c_obs, n_c_obs, study, n_draws=1000):
     """Fits multi-level meta-analysis model of binary outcomes.
     
+    See "meta-analysis-two-proportions.ipynb" in examples for usage.
+    
     Args:
         z_t_obs: number of occurrences in treatment group
         n_t_obs: number of opportunities/participants in treatment gruops
