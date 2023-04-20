@@ -1,23 +1,23 @@
 [![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
 
-# Bayesian Statistics Toolbox (BST) 
+# bayes-toolbox (aka, Bayesian Statistics Toolbox [BST]) 
 
-BST is a library of functions for running sophisticated Bayesian analyses in a simple, straight forward manner, and all in Python. 
+bayes-toolbox is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. 
 
 
 ## Documentation
 
-The documentation for `BST` is hosted [here](https://hyosubkim.github.io/bayesian-statistics-toolbox/) on a GitHub Pages site.
+The documentation for `bayes-toolbox` is hosted [here](https://hyosubkim.github.io/bayes-toolbox/).
 
 
 ## Installation 
 
-See the [installation instructions](https://hyosubkim.github.io/bayesian-statistics-toolbox/getting-started/) in the [documentation](https://hyosubkim.github.io/bayesian-statistics-toolbox/) for detailed instructions on how to install BST. 
+See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/getting-started/) in the [documentation](https://hyosubkim.github.io/bayes-toolbox) for detailed instructions on how to install `bayes-toolbox`. 
 
 
-## Citing BST
+## Citing bayes-toolbox
 
-If you use BST in your work, please cite use one of the following:
+If you use `bayes-toolbox` in your work, please cite use one of the following:
 
 ***APA format:***
 - Kim, H. E. (2022). Bayesian Statistics Toolbox (BST) (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.7339667
@@ -37,7 +37,7 @@ year = {2022}
 
 ## License
 
-This work is distributed for free under a [MIT license](https://github.com/hyosubkim/bayesian-statistics-toolbox/blob/main/LICENSE). 
+This work is distributed for free under a [MIT license](https://github.com/hyosubkim/bayes-toolbox/blob/main/LICENSE). 
 
 ## Acknowledgments
 
@@ -52,5 +52,5 @@ I have tried my best to give credit for your work wherever appropriate, but plea
 
 ## Contributors
 
-See the [CONTRIBUTORS.md](https://github.com/hyosubkim/bayesian-statistics-toolbox/blob/main/CONTRIBUTORS.md) file for a regularly updated list of contributors. 
+See the [CONTRIBUTORS.md](https://github.com/hyosubkim/bayes-toolbox/blob/main/CONTRIBUTORS.md) file for a regularly updated list of contributors. 
 
