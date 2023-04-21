@@ -49,11 +49,14 @@ def standardize(X):
     if isinstance(X, pd.DataFrame):
         mu_X = X.mean().values
         sigma_X = X.std().values
-        X_s = (X - mu_X) / sigma_X
-        return X_s, mu_X, sigma_X
     else:
-        X_s = (X - X.mean()) / X.std()
-        return X_s, X.mean(), X.std()
+        mu_X = X.mean(axis=0)
+        sigma_X = X.std(axis=0)
+    
+    # Standardize X
+    X_s = (X - mu_X) / sigma_X
+    
+    return X_s, mu_X, sigma_X
 
 
 def parse_categorical(x):
@@ -623,7 +626,7 @@ def bayesian_two_factor_anova(x1, x2, y, n_draws=1000):
 
 
 def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
-    """Returns coefficients that obey sum-to-zero constraing.
+    """Returns coefficients that obey sum-to-zero constraint.
 
     Args:
         idata: InferenceData object.
@@ -674,6 +677,10 @@ def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
 
     for j1, j2 in np.ndindex(n_levels_x1, n_levels_x2):
         post.b1b2[j1, j2] = post.m[j1, j2] - (post.b0 + post.b1[j1] + post.b2[j2])
+    
+    assert np.allclose(post.b1.sum(dim=["factor1"]), 0, atol=1e-5)
+    assert np.allclose(post.b2.sum(dim=["factor2"]), 0, atol=1e-5)
+    assert np.allclose(post.b1b2.sum(dim=["factor1", "factor2"]), 0, atol=1e-5)
 
     return post
 
@@ -770,7 +777,10 @@ def oneway_rm_anova_convert_to_sum_to_zero(idata, x1, x_s):
     post["b0"] = post.m.mean(dim=["factor1", "factor_subj"])
     post["b1"] = post.m.mean(dim="factor_subj") - post.b0
     post["b_s"] = post.m.mean(dim="factor1") - post.b0
-
+    
+    assert np.allclose(post.b1.sum(dim=["factor1"]), 0, atol=1e-5)
+    assert np.allclose(post.b_s.sum(dim=["factor_subj"]), 0, atol=1e-5)
+    
     return post
 
 
@@ -939,7 +949,7 @@ def calc_marginal_means(m_SxBxW):
 
 
 def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
-    """Returns coefficients that obey sum-to-zero constraing.
+    """Returns coefficients that obey sum-to-zero constraint.
 
     Args:
         idata: InferenceData object.
@@ -975,6 +985,11 @@ def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
     posterior = posterior.assign(
         bS=(["subj", "sample"], (m_S - m_B).mean(dim="between_subj").data)
     )
+    
+    assert np.allclose(posterior.bB.sum(dim=["between_subj"]), 0, atol=1e-5)
+    assert np.allclose(posterior.bW.sum(dim=["within_subj"]), 0, atol=1e-5)
+    assert np.allclose(posterior.bBxW.sum(dim=["between_subj", "within_subj"]), 0, atol=1e-5)
+    assert np.allclose(posterior.bS.sum(dim=["subj"]), 0, atol=1e-5)
 
     return posterior
 
