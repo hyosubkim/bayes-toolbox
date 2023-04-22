@@ -251,6 +251,7 @@ dependencies:
     - docopt==0.6.2
     - docutils==0.19
     - ghp-import==2.1.0
+    - iniconfig==2.0.0
     - jaraco-classes==3.2.3
     - keyring==23.13.1
     - markdown==3.3.7
@@ -264,7 +265,9 @@ dependencies:
     - pathspec==0.11.1
     - pipreqs==0.4.13
     - pkginfo==1.9.6
+    - pluggy==1.0.0
     - pyproject-hooks==1.0.0
+    - pytest==7.3.1
     - pyyaml==6.0
     - pyyaml-env-tag==0.1
     - readme-renderer==37.3
