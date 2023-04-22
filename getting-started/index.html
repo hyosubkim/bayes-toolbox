@@ -133,7 +133,7 @@
 <p>If you're not using MacOSX and want to replicate this environment, read the "Export your environment" section of this <a href="https://goodresearch.dev/setup.html">page</a>. </p>
 <p>After cloning and installing <code>bayes-toolbox</code> locally, you can access it from any directory. </p>
 <h3 id="helpful-hints">Helpful hints</h3>
-<p>To access the correct kernel from a Jupyter notebook, you must manually add the kernel for your new virtual environment "bayes_toolbox" (or whatever you named it). To do so, you first need to install <a href="https://github.com/ipython/ipykernel">ipykernel</a>:</p>
+<p>If you've created the <code>bayes_toolbox</code> virtual environment and want to access the correct kernel from a Jupyter notebook, you must manually add the kernel for your new virtual environment "bayes_toolbox" (or whatever you named it). To do so, you first need to install <a href="https://github.com/ipython/ipykernel">ipykernel</a>:</p>
 <pre><code>pip install --user ipykernel
 </code></pre>
 <p>Next, add your virtual environment to Jupyter:</p>
@@ -141,16 +141,54 @@
 </code></pre>
 <p>Use whatever you named your virtual environment in place of <code>MYENV</code>. That should be all that's necessary in order to choose your new virtual environment as a kernel from your Jupyter notebook. For more details, read this <a href="https://janakiev.com/blog/jupyter-virtual-envs/">page</a>. </p>
 <h2 id="how-do-i-learn-to-use-bst">How do I learn to use BST?</h2>
-<p>The <code>BEST</code>  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 <a href="https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf">article</a> by John Kruschke) in the <code>examples</code> <a href="https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples">directory</a> is a good place to see how <code>bayes-toolbox</code> can be used to make Bayesian analyses simple to implement. I've adapted the <a href="https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html">notebook</a> of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's <a href="https://github.com/JWarmenhoven/DBDA-python">repo</a>.</p>
+<p>The <code>BEST</code>  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 <a href="https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf">article</a> by John Kruschke) in the <code>examples</code> <a href="https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples">directory</a> is a good place to see how <code>bayes-toolbox</code> can be used to make implementing Bayesian analyses easy. I've adapted the <a href="https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html">notebook</a> of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's <a href="https://github.com/JWarmenhoven/DBDA-python">repo</a>.</p>
 <h2 id="example-syntax">Example syntax</h2>
-<p>Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, it looks like</p>
+<p>Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, it looks like this:</p>
 <pre><code class="language-python"># Import the bayes-toolbox package 
 import bayes_toolbox.glm as bg
 
 # Call your bayes-toolbox function and return the PyMC model and InferenceData objects
-model, idata = bg.hierarchical_regression(df[&quot;x&quot;], df[&quot;y&quot;], df[&quot;subj&quot;], acceptance_rate=0.95)
+model, idata = bg.hierarchical_regression(df[&quot;x&quot;], df[&quot;y&quot;], df[&quot;subj&quot;])
 </code></pre>
-<p>Before, this would have taken <em>many</em> more lines of code. </p>
+<p>Before, this would have taken <em>many</em> more lines of code:</p>
+<pre><code># Standardize variables
+zx, mu_x, sigma_x = standardize(x)
+zy, mu_y, sigma_y = standardize(y)
+
+# Convert subject variable to categorical dtype if it is not already
+subj_idx, subj_levels, n_subj = parse_categorical(subj)
+
+# Define your statistical model
+with pm.Model(coords={&quot;subj&quot;: subj_levels}) as model:
+    # Hyperpriors
+    zbeta0 = pm.Normal(&quot;zbeta0&quot;, mu=0, tau=1 / 10**2)
+    zbeta1 = pm.Normal(&quot;zbeta1&quot;, mu=0, tau=1 / 10**2)
+    zsigma0 = pm.Uniform(&quot;zsigma0&quot;, 10**-3, 10**3)
+    zsigma1 = pm.Uniform(&quot;zsigma1&quot;, 10**-3, 10**3)
+
+    # Priors for individual subject parameters
+    zbeta0_s_offset = pm.Normal(&quot;zbeta0_s_offset&quot;, mu=0, sigma=1, dims=&quot;subj&quot;)
+    zbeta0_s = pm.Deterministic(
+        &quot;zbeta0_s&quot;, zbeta0 + zbeta0_s_offset * zsigma0, dims=&quot;subj&quot;
+    )
+
+    zbeta1_s_offset = pm.Normal(&quot;zbeta1_s_offset&quot;, mu=0, sigma=1, dims=&quot;subj&quot;)
+    zbeta1_s = pm.Deterministic(
+        &quot;zbeta1_s&quot;, zbeta1 + zbeta1_s_offset * zsigma1, dims=&quot;subj&quot;
+    )
+
+    mu = zbeta0_s[subj_idx] + zbeta1_s[subj_idx] * zx
+
+    zsigma = pm.Uniform(&quot;zsigma&quot;, 10**-3, 10**3)
+    nu_minus_one = pm.Exponential(&quot;nu_minus_one&quot;, 1 / 29)
+    nu = pm.Deterministic(&quot;nu&quot;, nu_minus_one + 1)
+
+    # Define likelihood function
+    likelihood = pm.StudentT(&quot;likelihood&quot;, nu, mu=mu, sigma=zsigma, observed=zy)
+
+    # Sample from posterior
+    idata = pm.sample(draws=n_draws, target_accept=acceptance_rate)
+</code></pre>
               
             </div>
           </div><footer>
