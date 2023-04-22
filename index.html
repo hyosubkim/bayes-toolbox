@@ -51,6 +51,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#look-before-you-leap">Look before you leap</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#bayesian-models-that-are-currently-included-and-validated-frequentist-analogue-in-parentheses">Bayesian models that are currently included and validated (frequentist analogue in parentheses)</a>
@@ -108,14 +110,16 @@
                 <h1 id="bayes-toolbox">bayes-toolbox</h1>
 <p><a href="https://zenodo.org/badge/latestdoi/553182204"><img alt="DOI" src="https://zenodo.org/badge/553182204.svg" /></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a></p>
-<p><code>bayes-toolbox</code> (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. The package is actively being developed in a public <a href="https://github.com/hyosubkim/bayes-toolbox">GitHub repository</a>. </p>
+<p><code>bayes-toolbox</code> (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. </p>
 <h2 id="why-is-this-useful">Why is this useful?</h2>
 <h3 id="research">Research</h3>
 <p><code>bayes-toolbox</code> provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. By wrapping model definitions of Bayesian generalized linear models into convenient functions, <code>bayes-toolbox</code> makes it easy to run Bayesian analyses that are analogous to some of the most commonly used frequentist tests in the behavioral and neural sciences (think t-tests, ANOVAs, regression). All of the models (tests) are executable with one-liners, thereby making them ideal for use in an open, replicable (and Bayesian) workflow (watch this <a href="https://www.youtube.com/watch?v=ElfToZ9EBpM">PyMCon talk</a> to learn more). <strong>Example use cases and tests for nearly every model are provided in the <a href="https://github.com/hyosubkim/bayes-toolbox/tree/main/examples"><code>examples</code></a> directory, so you can see what a sensible Bayesian data analysis pipeline looks like.</strong> (Many of the example notebooks are adaptations of <a href="https://github.com/JWarmenhoven/DBDA-python">Jordi Warmenhoven's Python/PyMC3 port</a> of John Kruschke's excellent textbook <a href="https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0">"Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (DBDA)"</a>.) </p>
 <p>The benefits of using <code>bayes-toolbox</code> in terms of time and convenience will be most noticeable when utilizing hierarchical (multi-level) models, including the ANOVA-like ones. This is because <code>bayes-toolbox</code> takes care of the more finicky steps involved in Bayesian statistical modeling with embedded functions for things like standardizing/unstandardizing variables for more efficient MCMC sampling, parsing categorical variables for easier indexing, and implementing sum-to-zero constraints in ANOVA-like models. These are the sorts of implementational details that can add time (and frustration) when creating an analysis pipeline and discourage otherwise interested scientists from using Bayesian statistics. <code>bayes-toolbox</code> now removes those obstacles. </p>
-<p>Please note that the models in <code>bayes-toolbox</code> all utilize fairly uninformative, diffuse priors, which are, for the most part, the exact same ones used in the Kruschke text. </p>
+<p>The package is actively being developed in a public <a href="https://github.com/hyosubkim/bayes-toolbox">GitHub repository</a>, and we always welcome new contributors! No contribution is too small. If you have any issues with the code, suggestions on how to improve it, or have requests for additional content, whether new features or tutorials, please <a href="https://github.com/hyosubkim/bayes-toolbox/issues">open an issue on Github</a>. </p>
 <h3 id="education">Education</h3>
-<p><code>bayes-toolbox</code> will be very useful if you are going through <a href="https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0">Doing Bayesian Data Analysis</a> and want to learn how to implement the models in Python/PyMC.  </p>
+<p><code>bayes-toolbox</code> will be very useful if you are going through <a href="https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0">Doing Bayesian Data Analysis</a> and want to learn how to implement the models in Python/PyMC. </p>
+<h2 id="look-before-you-leap">Look before you leap</h2>
+<p>Please note that the models in <code>bayes-toolbox</code> all utilize fairly uninformative, diffuse priors, which are, for the most part, the exact same ones used in the Kruschke text. Also, keep in mind that even though <code>bayes-toolbox</code> offers a streamlined interface for performing common statistical tests, the assumptions John Kruschke and we, the developers, make in these models may not be the ones you want to make for your particular question. Therefore, it's a good idea to go through the notebooks in the <a href="https://github.com/hyosubkim/bayes-toolbox/tree/main/examples"><code>examples</code></a> to make sure the model is appropriate for your applications. Part of the beauty of Bayesian modeling is its flexibility, so if you want to change priors/hyperpriors/etc., feel free to use <code>bayes-toolbox</code> as model scaffolding for a new bespoke model fit to your purpose. And consider making it a <a href="https://hyosubkim.github.io/bayes-toolbox/how-to-contribute/">contribution</a>! </p>
 <h2 id="dependencies">Dependencies</h2>
 <p>Some of the main libraries used in this project:</p>
 <ul>
@@ -225,5 +229,5 @@ year = {2023}
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-04-22 15:56:44.902076+00:00
+Build Date UTC : 2023-04-22 16:50:37.914219+00:00
 -->
