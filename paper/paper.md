@@ -36,6 +36,6 @@ Given the current "replication crisis" in science, and increasing recognition of
 
 # Acknowledgements
 
-We thank the PyMC developers, John Kruschke, and Jordi Warmenhoven for generously sharing their work and knowledge. 
+Thank you to the PyMC developers, John Kruschke, and Jordi Warmenhoven for generously sharing your work and knowledge. 
 
 # References
