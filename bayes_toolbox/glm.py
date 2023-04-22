@@ -150,8 +150,9 @@ def BEST(y, group, n_draws=1000):
             "group_std", lower=sigma_y / 10, upper=sigma_y * 10, shape=len(level)
         )
 
-        # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition of 1 is to shift the
-        # distribution so that the range of possible values of nu are 1 to infinity (with mean of 30).
+        # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition 
+        # of 1 is to shift the distribution so that the range of possible values of nu
+        # are 1 to infinity (with mean of 30).
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
         nu = pm.Deterministic("nu", nu_minus_one + 1)
         nu_log10 = pm.Deterministic("nu_log10", np.log10(nu))
