@@ -26,7 +26,7 @@ aas-journal: Astrophysical Journal <- The name of the AAS journal.
 
 # Summary
 
-`bayes-toolbox` is a Python package intended to facilitate the increased use and adoption of Bayesian statistics in scientific research. As Python is one of the fastest growing and most widely used programming languages, `bayes-toolbox` fills the need for a Python library that makes it as easy to perform Bayesian statistical tests as it currently is to perform their "frequentist" counterparts. The intended users of `bayes-toolbox` are students and researchers who are looking for a low-friction way to learn Bayesian statistics and incorporate it into their research.
+`bayes-toolbox` is a Python package intended to facilitate the increased use and adoption of Bayesian statistics in scientific research. As Python is one of the fastest growing and most widely used programming languages, `bayes-toolbox` fills the need for a Python library that makes it as easy to perform Bayesian statistical tests as it currently is to perform their "frequentist" counterparts. The intended users of `bayes-toolbox` are students and researchers who are looking for a low friction way to learn Bayesian statistics and incorporate it into their research.
 
 # Statement of need
 
