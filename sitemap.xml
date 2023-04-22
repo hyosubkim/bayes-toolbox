@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://example.com/</loc>
+         <loc>https://hyosubkim.github.io/bayes-toolbox/</loc>
          <lastmod>2023-04-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/future-plans/</loc>
+         <loc>https://hyosubkim.github.io/bayes-toolbox/future-plans/</loc>
          <lastmod>2023-04-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/getting-started/</loc>
+         <loc>https://hyosubkim.github.io/bayes-toolbox/getting-started/</loc>
          <lastmod>2023-04-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/how-to-contribute/</loc>
+         <loc>https://hyosubkim.github.io/bayes-toolbox/how-to-contribute/</loc>
          <lastmod>2023-04-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/tutorials/</loc>
+         <loc>https://hyosubkim.github.io/bayes-toolbox/tutorials/</loc>
          <lastmod>2023-04-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
