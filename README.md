@@ -13,7 +13,7 @@ The documentation for `bayes-toolbox` is hosted [here](https://hyosubkim.github.
 
 ## Installation 
 
-[![PyPI version](https://badge.fury.io/py/bayes-toolbox.svg)](https://badge.fury.io/py/bayes-toolbox)
+[![PyPI version](https://badge.fury.io/py/bayes-toolbox.svg)](https://badge.fury.io/py/bayes-toolbox)  
 
 The recommended method of installing bayes-toolbox is with `pip`:
 ```
