@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-`bayes-toolbox` (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. The package is actively being developed in a public [GitHub repository](https://github.com/hyosubkim/bayes-toolbox). 
+`bayes-toolbox` (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. 
 
 ## Why is this useful?
 
@@ -12,10 +12,13 @@
 
 The benefits of using `bayes-toolbox` in terms of time and convenience will be most noticeable when utilizing hierarchical (multi-level) models, including the ANOVA-like ones. This is because `bayes-toolbox` takes care of the more finicky steps involved in Bayesian statistical modeling with embedded functions for things like standardizing/unstandardizing variables for more efficient MCMC sampling, parsing categorical variables for easier indexing, and implementing sum-to-zero constraints in ANOVA-like models. These are the sorts of implementational details that can add time (and frustration) when creating an analysis pipeline and discourage otherwise interested scientists from using Bayesian statistics. `bayes-toolbox` now removes those obstacles. 
 
-Please note that the models in `bayes-toolbox` all utilize fairly uninformative, diffuse priors, which are, for the most part, the exact same ones used in the Kruschke text. 
+The package is actively being developed in a public [GitHub repository](https://github.com/hyosubkim/bayes-toolbox), and we always welcome new contributors! No contribution is too small. If you have any issues with the code, suggestions on how to improve it, or have requests for additional content, whether new features or tutorials, please [open an issue on Github](https://github.com/hyosubkim/bayes-toolbox/issues). 
 
 ### Education
-`bayes-toolbox` will be very useful if you are going through [Doing Bayesian Data Analysis](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0) and want to learn how to implement the models in Python/PyMC.  
+`bayes-toolbox` will be very useful if you are going through [Doing Bayesian Data Analysis](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0) and want to learn how to implement the models in Python/PyMC. 
+
+## Look before you leap
+Please note that the models in `bayes-toolbox` all utilize fairly uninformative, diffuse priors, which are, for the most part, the exact same ones used in the Kruschke text. Also, keep in mind that even though `bayes-toolbox` offers a streamlined interface for performing common statistical tests, the assumptions John Kruschke and we, the developers, make in these models may not be the ones you want to make for your particular question. Therefore, it's a good idea to go through the notebooks in the [`examples`](https://github.com/hyosubkim/bayes-toolbox/tree/main/examples) to make sure the model is appropriate for your applications. Part of the beauty of Bayesian modeling is its flexibility, so if you want to change priors/hyperpriors/etc., feel free to use `bayes-toolbox` as model scaffolding for a new bespoke model fit to your purpose. And consider making it a [contribution](https://hyosubkim.github.io/bayes-toolbox/how-to-contribute/)! 
 
 ## Dependencies
 Some of the main libraries used in this project:
