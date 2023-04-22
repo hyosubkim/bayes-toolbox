@@ -5,7 +5,7 @@ authors:
   given-names: "Hyosub E."
   orcid: "https://orcid.org/0000-0003-0109-593X"
 title: "bayes-toolbox"
-version: 0.0.1
+version: 0.1.0
 doi: 10.5281/zenodo.7339667
-date-released: 2023-04-20
+date-released: 2023-04-22
 url: "https://github.com/hyosubkim/bayes-toolbox"
