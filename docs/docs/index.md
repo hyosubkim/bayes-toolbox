@@ -1,6 +1,7 @@
 # bayes-toolbox 
 
 [![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 `bayes-toolbox` (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. The package is actively being developed in a public [GitHub repository](https://github.com/hyosubkim/bayes-toolbox). 
 
