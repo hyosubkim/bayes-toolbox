@@ -1,5 +1,5 @@
-site_name: bayesian-statistics-toolbox
-site_url: https://example.com/
+site_name: bayes-toolbox
+site_url: https://hyosubkim.github.io/bayes-toolbox/
 nav:
     - Home: index.md
     - Getting Started: getting-started.md
