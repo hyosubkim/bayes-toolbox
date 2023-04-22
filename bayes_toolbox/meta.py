@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Contains code copied and adapted from Jordi Warmenhoven's PyMC3 port of
-# Doing Bayesian Data Analysis (https://github.com/JWarmenhoven/DBDA-python).
 
 """
 A collection of Bayesian statistical models and associated utility functions.
