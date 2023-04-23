@@ -1,5 +1,7 @@
 site_name: bayes-toolbox
 site_url: https://hyosubkim.github.io/bayes-toolbox/
+repo_url: https://github.com/hyosubkim/bayes-toolbox
+edit_uri: edit/main/docs/
 nav:
     - Home: index.md
     - Getting Started: getting-started.md
