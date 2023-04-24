@@ -11,7 +11,7 @@ pip install bayes_toolbox
 ### From source: Cloning and building
 The latest development version of `bayes-toolbox` can be cloned from GitHub using `git`:
 ```
-git clone git://github.com/hyosubkim/bayes-toolbox.git
+git clone https://github.com/hyosubkim/bayes-toolbox.git
 ```
 
 To build and install the project (from the root directory, i.e., inside the cloned `bayes-toolbox` directory):
