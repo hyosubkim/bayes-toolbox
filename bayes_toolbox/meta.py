@@ -79,3 +79,34 @@ def meta_binary_outcome(z_t_obs, n_t_obs, z_c_obs, n_c_obs, study, n_draws=1000)
         idata = pm.sample(draws=n_draws, target_accept=0.90)
 
         return model, idata
+
+
+def meta_normal_outcome_beta_version(eff_size, se_eff_size, study, n_draws=1000):
+    """Fits multi-level meta-analysis model of normally-distribute outcomes.
+
+    See meta-analyses.ipynb in examples for usage.
+
+    Args:
+        eff_size: Reported standardized effect size
+        se_eff_size: Reported standard error
+        study: List of studies included in analysis
+
+    Returns:
+        PyMC model and InferenceData objects.
+    """
+
+    with pm.Model(coords={"study": study}) as model:
+        # Hyper-priors (assumes observations are standaradized effect sizes)
+        mu_theta = pm.Normal("mu_theta", mu=0, sigma=1)  # Diffuse prior
+        tau_theta = pm.Exponential("tau_theta", lam=1)  # Expected value = 1 / lam
+
+        # Priors
+        theta = pm.Normal("theta", mu=mu_theta, sigma=tau_theta, dims="study")
+
+        # Likelihood: y is empirical effect size of each study
+        y = pm.Normal("y", mu=theta, tau=1 / (se_eff_size**2), observed=eff_size)
+
+        # Sample from the posterior
+        idata = pm.sample(draws=n_draws, target_accept=0.90)
+
+    return model, idata
