@@ -63,7 +63,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#how-do-i-learn-to-use-bst">How do I learn to use BST?</a>
+    <li class="toctree-l2"><a class="reference internal" href="#how-do-i-learn-to-use-bayes-toolbox">How do I learn to use bayes-toolbox?</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#example-syntax">Example syntax</a>
     </li>
@@ -141,23 +141,41 @@
 <pre><code>python -m ipykernel install --user --name=MYENV
 </code></pre>
 <p>Use whatever you named your virtual environment in place of <code>MYENV</code>. That should be all that's necessary in order to choose your new virtual environment as a kernel from your Jupyter notebook. For more details, read this <a href="https://janakiev.com/blog/jupyter-virtual-envs/">page</a>. </p>
-<h2 id="how-do-i-learn-to-use-bst">How do I learn to use BST?</h2>
+<h2 id="how-do-i-learn-to-use-bayes-toolbox">How do I learn to use bayes-toolbox?</h2>
 <p>The <code>BEST</code>  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 <a href="https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf">article</a> by John Kruschke) in the <code>examples</code> <a href="https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples">directory</a> is a good place to see how <code>bayes-toolbox</code> can be used to make implementing Bayesian analyses easy. I've adapted the <a href="https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html">notebook</a> of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's <a href="https://github.com/JWarmenhoven/DBDA-python">repo</a>.</p>
 <h2 id="example-syntax">Example syntax</h2>
-<p>Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, it looks like this:</p>
-<pre><code class="language-python"># Import the bayes-toolbox package 
-import bayes_toolbox.glm as bg
+<p>Following imports of the most common Python packages for data analysis and Bayesian statistics, import `bayes_toolbox'. </p>
+<pre><code class="language-python"># Usual imports 
+import arviz as az
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pymc as pm
+import seaborn as sns
+import xarray as xr
 
-# Call your bayes-toolbox function and return the PyMC model and InferenceData objects
-model, idata = bg.hierarchical_regression(df[&quot;x&quot;], df[&quot;y&quot;], df[&quot;subj&quot;])
+# Import the bayes-toolbox package 
+import bayes_toolbox.glm as bg
 </code></pre>
-<p>Before, this would have taken <em>many</em> more lines of code:</p>
-<pre><code># Standardize variables
-zx, mu_x, sigma_x = standardize(x)
-zy, mu_y, sigma_y = standardize(y)
+<p>Import the data you want to model (the following example can be found in the <code>examples</code> subdirectory). So far, these are all standard steps and not specific to <code>bayes-toolbox</code>. </p>
+<pre><code class="language-python"># Import data (from 'examples' subdirectory) into pandas data frame 
+df = pd.read_csv(&quot;data/HierLinRegressData.csv&quot;)
+df.Subj = df_HRegr.Subj.astype(&quot;category&quot;)
+df.Subj = df_HRegr.Subj.cat.as_ordered()
+</code></pre>
+<p><strong>Now, with <code>bayes-toolbox</code>, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, simply call the appropriate function:</strong></p>
+<pre><code class="language-python"># Call your bayes-toolbox function and return the PyMC model and InferenceData objects
+model, idata = bg.hierarchical_regression(
+df[&quot;X&quot;], df[&quot;Y&quot;], df[&quot;Subj&quot;], acceptance_rate=0.95
+)
+</code></pre>
+<p>Before, this exact same analysis would have taken <em>many</em> more lines of code:</p>
+<pre><code class="language-python"># Standardize variables
+zx, mu_x, sigma_x = standardize(df[&quot;X&quot;])
+zy, mu_y, sigma_y = standardize(df[&quot;Y&quot;)
 
 # Convert subject variable to categorical dtype if it is not already
-subj_idx, subj_levels, n_subj = parse_categorical(subj)
+subj_idx, subj_levels, n_subj = parse_categorical(df[&quot;Subj&quot;])
 
 # Define your statistical model
 with pm.Model(coords={&quot;subj&quot;: subj_levels}) as model:
