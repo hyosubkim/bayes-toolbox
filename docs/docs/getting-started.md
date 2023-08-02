@@ -55,7 +55,7 @@ Use whatever you named your virtual environment in place of `MYENV`. That should
 The `BEST`  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 [article](https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf) by John Kruschke) in the `examples` [directory](https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples) is a good place to see how `bayes-toolbox` can be used to make implementing Bayesian analyses easy. I've adapted the [notebook](https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html) of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's [repo](https://github.com/JWarmenhoven/DBDA-python).
 
 ## Example syntax
-Following imports of the most common Python packages for data analysis and Bayesian statistics, import `bayes_toolbox'. 
+Following imports of the most common Python packages for data analysis and Bayesian statistics, import `bayes_toolbox`. 
 
 ```python
 # Usual imports 
