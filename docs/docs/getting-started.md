@@ -51,28 +51,53 @@ python -m ipykernel install --user --name=MYENV
 ```
 Use whatever you named your virtual environment in place of `MYENV`. That should be all that's necessary in order to choose your new virtual environment as a kernel from your Jupyter notebook. For more details, read this [page](https://janakiev.com/blog/jupyter-virtual-envs/). 
 
-## How do I learn to use BST?
+## How do I learn to use bayes-toolbox?
 The `BEST`  notebook (short for "Bayesian Estimation Supersedes the t-Test", a famous 2013 [article](https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf) by John Kruschke) in the `examples` [directory](https://github.com/hyosubkim/bayesian-statistics-toolbox/tree/main/examples) is a good place to see how `bayes-toolbox` can be used to make implementing Bayesian analyses easy. I've adapted the [notebook](https://www.pymc.io/projects/examples/en/latest/case_studies/BEST.html) of the same name from the PyMC developers to show how the model building and MCMC sampling are all embedded in a single function now. You can see similar workflows for other model types in all of the other example notebooks, which track several of the chapters from "Doing Bayesian Data Analysis" and is modeled off of Jordi Warmenhoven's [repo](https://github.com/JWarmenhoven/DBDA-python).
 
 ## Example syntax
-Now, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, it looks like this:
+Following imports of the most common Python packages for data analysis and Bayesian statistics, import `bayes_toolbox'. 
 
 ```python
+# Usual imports 
+import arviz as az
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pymc as pm
+import seaborn as sns
+import xarray as xr
+
 # Import the bayes-toolbox package 
 import bayes_toolbox.glm as bg
+```
 
+Import the data you want to model (the following example can be found in the `examples` subdirectory. So far, these are all fairly standard steps and not specific to `bayes-toolbox`. 
+
+```python
+# Import data (from 'examples' subdirectory) into pandas data frame 
+df = pd.read_csv("data/HierLinRegressData.csv")
+df.Subj = df_HRegr.Subj.astype("category")
+df.Subj = df_HRegr.Subj.cat.as_ordered()
+```
+
+**Now, with `bayes-toolbox`, if you want to run a fairly sophisticated multi-level (hierarchical) linear regression model in which you are modeling individual as well as group-level slope and intercept parameters, simply call the appropriate function:**
+
+```python
 # Call your bayes-toolbox function and return the PyMC model and InferenceData objects
-model, idata = bg.hierarchical_regression(df["x"], df["y"], df["subj"])
+model, idata = bg.hierarchical_regression(
+df["X"], df["Y"], df["Subj"], acceptance_rate=0.95
+)
 ```
-Before, this would have taken *many* more lines of code:
 
-```
+Before, this exact same analysis would have taken *many* more lines of code:
+
+```python
 # Standardize variables
-zx, mu_x, sigma_x = standardize(x)
-zy, mu_y, sigma_y = standardize(y)
+zx, mu_x, sigma_x = standardize(df["X"])
+zy, mu_y, sigma_y = standardize(df["Y")
 
 # Convert subject variable to categorical dtype if it is not already
-subj_idx, subj_levels, n_subj = parse_categorical(subj)
+subj_idx, subj_levels, n_subj = parse_categorical(df["Subj"])
 
 # Define your statistical model
 with pm.Model(coords={"subj": subj_levels}) as model:
