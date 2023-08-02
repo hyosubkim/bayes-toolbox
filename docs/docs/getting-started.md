@@ -71,7 +71,7 @@ import xarray as xr
 import bayes_toolbox.glm as bg
 ```
 
-Import the data you want to model (the following example can be found in the `examples` subdirectory. So far, these are all fairly standard steps and not specific to `bayes-toolbox`. 
+Import the data you want to model (the following example can be found in the `examples` subdirectory). So far, these are all standard steps and not specific to `bayes-toolbox`. 
 
 ```python
 # Import data (from 'examples' subdirectory) into pandas data frame 
