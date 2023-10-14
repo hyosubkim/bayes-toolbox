@@ -12,3 +12,54 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
+
+    name: Set up Python ${{ matrix.python-version }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge, defaults
+          channel-priority: true
+          python-version: ${{ matrix.python-version }}
+          auto-update-conda: true
+
+      - shell: bash -l {0}
+        run: |
+          conda info
+          conda list
+
+      - name: Install bayes_toolbox and all its dependencies
+        shell: bash -l {0}
+        run: |
+          conda install -c conda-forge python-graphviz
+          conda install pip
+          pip install .
+          pip install .[dev]
+          pip install .[jax]
+
+          python --version
+          conda list
+          pip freeze
+
+      - name: Run linters
+        shell: bash -l {0}
+        run: |
+          echo "Running black..."
+          black bayes_toolbox --check --diff --color
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: python -m pytest -vv --cov=bayes_toolbox i --cov-report=term --cov-report=xml tests
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
