@@ -29,12 +29,12 @@ dependencies:
   - bzip2=1.0.8=h0d85af4_4
   - c-ares=1.18.1=h0d85af4_0
   - c-compiler=1.5.1=hbf74d83_0
-  - ca-certificates=2022.12.7=h033912b_0
+  - ca-certificates=2023.08.22=hecd8cb5_0
   - cachetools=5.2.0=pyhd8ed1ab_0
   - cairo=1.16.0=h904041c_1014
   - cctools=973.0.1=h76f1dac_10
   - cctools_osx-64=973.0.1=h2b95895_10
-  - certifi=2022.12.7=pyhd8ed1ab_0
+  - certifi=2023.7.22=py311hecd8cb5_0
   - cffi=1.15.1=py311ha86e640_2
   - cftime=1.6.2=py311hd5badaa_1
   - charset-normalizer=2.1.1=pyhd8ed1ab_0
@@ -58,24 +58,25 @@ dependencies:
   - entrypoints=0.4=pyhd8ed1ab_0
   - etuples=0.3.8=pyhd8ed1ab_0
   - executing=1.2.0=pyhd8ed1ab_0
-  - expat=2.5.0=hf0c8a7f_0
+  - expat=2.5.0=hcec6c5f_0
   - fastprogress=1.0.3=pyhd8ed1ab_0
   - filelock=3.8.0=pyhd8ed1ab_0
   - flit-core=3.8.0=pyhd8ed1ab_0
-  - font-ttf-dejavu-sans-mono=2.37=hab24e00_0
-  - font-ttf-inconsolata=3.000=h77eed37_0
-  - font-ttf-source-code-pro=2.038=h77eed37_0
-  - font-ttf-ubuntu=0.83=hab24e00_0
-  - fontconfig=2.14.1=h5bb23bf_0
-  - fonts-conda-ecosystem=1=0
+  - font-ttf-dejavu-sans-mono=2.37=hd3eb1b0_0
+  - font-ttf-inconsolata=2.001=hcb22688_0
+  - font-ttf-source-code-pro=2.030=hd3eb1b0_0
+  - font-ttf-ubuntu=0.83=h8b1ccd4_0
+  - fontconfig=2.14.1=hb0a0c50_2
+  - fonts-anaconda=1=h8fa9717_0
+  - fonts-conda-ecosystem=1=hd3eb1b0_0
   - fonts-conda-forge=1=0
   - fonttools=4.38.0=py311h5547dcb_1
   - freetype=2.12.1=h3f81eb7_0
-  - fribidi=1.0.10=hbcb3906_0
+  - fribidi=1.0.10=haf1e3a3_0
   - gdk-pixbuf=2.42.8=h3648f77_1
   - gettext=0.21.1=h8a4c099_0
   - giflib=5.2.1=hbcb3906_2
-  - graphite2=1.3.13=h2e338ed_1001
+  - graphite2=1.3.14=he9d5cce_1
   - graphviz=6.0.1=ha8464fc_0
   - gtk2=2.24.33=h7c1209e_2
   - gts=0.7.6=hccb3bdf_2
@@ -118,7 +119,7 @@ dependencies:
   - libedit=3.1.20191231=h0678c8f_2
   - libev=4.33=haf1e3a3_1
   - libffi=3.4.2=h0d85af4_5
-  - libgd=2.3.3=h1e214de_3
+  - libgd=2.3.3=he7e2580_1
   - libgfortran=5.0.0=9_5_0_h97931a8_26
   - libgfortran5=11.3.0=h082f757_26
   - libglib=2.74.1=h4c723e1_1
@@ -135,7 +136,7 @@ dependencies:
   - libsqlite=3.39.4=ha978bb4_0
   - libssh2=1.10.0=h47af595_3
   - libtiff=4.4.0=hdb44e8a_4
-  - libtool=2.4.6=he49afe7_1008
+  - libtool=2.4.6=hcec6c5f_1009
   - libwebp=1.2.4=hfa4350a_0
   - libwebp-base=1.2.4=h775f41a_0
   - libxcb=1.13=h0d85af4_1004
@@ -168,19 +169,20 @@ dependencies:
   - numpy=1.23.4=py311h62c7003_1
   - openblas=0.3.21=openmp_hbefa662_3
   - openjpeg=2.5.0=h5d0d7b0_1
-  - openssl=3.0.7=hfd90126_2
+  - openssl=3.0.11=hca72f7f_2
+  - packaging=23.1=py311hecd8cb5_0
   - pandas=1.5.1=py311hd84f3f5_1
   - pandoc=2.19.2=h694c41f_1
   - pandocfilters=1.5.0=pyhd8ed1ab_0
   - pango=1.50.11=h7fca291_0
   - parso=0.8.3=pyhd8ed1ab_0
-  - patsy=0.5.3=pyhd8ed1ab_0
+  - patsy=0.5.3=py311hecd8cb5_0
   - pcre2=10.40=h1c4e4bc_0
   - pexpect=4.8.0=pyh1a96a4e_2
   - pickleshare=0.7.5=py_1003
   - pillow=9.2.0=py311he7df5c9_3
   - pip=22.3.1=pyhd8ed1ab_0
-  - pixman=0.40.0=hbcb3906_0
+  - pixman=0.40.0=h9ed2024_1
   - pkgutil-resolve-name=1.3.10=pyhd8ed1ab_0
   - platformdirs=2.5.2=pyhd8ed1ab_1
   - prometheus_client=0.15.0=pyhd8ed1ab_0
@@ -244,10 +246,12 @@ dependencies:
   - zlib=1.2.13=hfd90126_4
   - zstd=1.5.2=hfa58983_4
   - pip:
-    - bayes-toolbox==0.0.2
+    - bayes-toolbox==0.1.0
     - black==23.3.0
     - build==0.10.0
+    - causalgraphicalmodels==0.0.4
     - click==8.1.3
+    - coverage==7.3.2
     - docopt==0.6.2
     - docutils==0.19
     - ghp-import==2.1.0
@@ -261,7 +265,7 @@ dependencies:
     - mkdocs==1.4.2
     - more-itertools==9.1.0
     - mypy-extensions==1.0.0
-    - packaging==23.1
+    - networkx==3.1
     - pathspec==0.11.1
     - pipreqs==0.4.13
     - pkginfo==1.9.6
