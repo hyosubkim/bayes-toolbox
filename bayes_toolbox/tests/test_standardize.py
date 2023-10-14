@@ -1,5 +1,5 @@
 import numpy as np
-from bayes_toolbox.glm import standardize
+from bayes_toolbox.glm import standardize, BEST_paired
 
 def test_mus():
     X = np.random.normal(loc=10, scale=20, size=(10,2))
@@ -11,4 +11,31 @@ def test_sigmas():
     X_s, _, sigma_X = standardize(X)
     assert np.allclose(X_s.std(axis=0), np.ones_like(sigma_X), atol=1e-4)
     
-    
+import pytest
+import numpy as np
+import pymc3 as pm
+from bayes_toolbox.glm import BEST_paired
+
+# Define a test for BEST_paired
+def test_BEST_paired():
+    # Generate test data
+    np.random.seed(0)
+    y1 = np.random.normal(0, 1, 100)
+    y2 = np.random.normal(0.1, 1, 100)
+
+    # Call the BEST_paired function with test data
+    model, idata = BEST_paired(y1, y2)
+
+    # Perform assertions to check if the function output is as expected
+    assert isinstance(model, pm.Model)
+    assert isinstance(idata, pm.backends.base.InferenceData)
+    assert "mu" in model.named_vars
+    assert "sigma" in model.named_vars
+    assert "nu_minus_one" in model.named_vars
+    assert "nu" in model.named_vars
+    assert "likelihood" in model.named_vars
+    assert "effect_size" in model.named_vars
+
+# You can add more test cases and assertions as needed.
+
+
