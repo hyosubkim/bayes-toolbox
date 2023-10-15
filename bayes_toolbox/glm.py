@@ -52,10 +52,10 @@ def standardize(X):
     else:
         mu_X = X.mean(axis=0)
         sigma_X = X.std(axis=0)
-    
+
     # Standardize X
     X_s = (X - mu_X) / sigma_X
-    
+
     return X_s, mu_X, sigma_X
 
 
@@ -150,7 +150,7 @@ def BEST(y, group, n_draws=1000):
             "group_std", lower=sigma_y / 10, upper=sigma_y * 10, shape=len(level)
         )
 
-        # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition 
+        # See Kruschke Ch 16.2.1 for in-depth rationale for prior on nu. The addition
         # of 1 is to shift the distribution so that the range of possible values of nu
         # are 1 to infinity (with mean of 30).
         nu_minus_one = pm.Exponential("nu_minus_one", 1 / 29)
@@ -678,7 +678,7 @@ def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
 
     for j1, j2 in np.ndindex(n_levels_x1, n_levels_x2):
         post.b1b2[j1, j2] = post.m[j1, j2] - (post.b0 + post.b1[j1] + post.b2[j2])
-    
+
     assert np.allclose(post.b1.sum(dim=["factor1"]), 0, atol=1e-5)
     assert np.allclose(post.b2.sum(dim=["factor2"]), 0, atol=1e-5)
     assert np.allclose(post.b1b2.sum(dim=["factor1", "factor2"]), 0, atol=1e-5)
@@ -778,10 +778,10 @@ def oneway_rm_anova_convert_to_sum_to_zero(idata, x1, x_s):
     post["b0"] = post.m.mean(dim=["factor1", "factor_subj"])
     post["b1"] = post.m.mean(dim="factor_subj") - post.b0
     post["b_s"] = post.m.mean(dim="factor1") - post.b0
-    
+
     assert np.allclose(post.b1.sum(dim=["factor1"]), 0, atol=1e-5)
     assert np.allclose(post.b_s.sum(dim=["factor_subj"]), 0, atol=1e-5)
-    
+
     return post
 
 
@@ -986,10 +986,12 @@ def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
     posterior = posterior.assign(
         bS=(["subj", "sample"], (m_S - m_B).mean(dim="between_subj").data)
     )
-    
+
     assert np.allclose(posterior.bB.sum(dim=["between_subj"]), 0, atol=1e-5)
     assert np.allclose(posterior.bW.sum(dim=["within_subj"]), 0, atol=1e-5)
-    assert np.allclose(posterior.bBxW.sum(dim=["between_subj", "within_subj"]), 0, atol=1e-5)
+    assert np.allclose(
+        posterior.bBxW.sum(dim=["between_subj", "within_subj"]), 0, atol=1e-5
+    )
     assert np.allclose(posterior.bS.sum(dim=["subj"]), 0, atol=1e-5)
 
     return posterior
