@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import pymc as pm
-from bayes_toolbox.glm import standardize, BEST, BEST_paired
+from bayes_toolbox.glm import *
 
 def test_mus():
     X = np.random.normal(loc=10, scale=20, size=(10,2))
@@ -14,6 +14,22 @@ def test_sigmas():
     X = np.random.normal(loc=10, scale=20, size=(10,2))
     X_s, _, sigma_X = standardize(X)
     assert np.allclose(X_s.std(axis=0), np.ones_like(sigma_X), atol=1e-4)
+
+def test_parse_categorical():
+    # Create a sample categorical variable
+    x = pd.Series(["A", "B", "A", "C", "B", "C"]).astype("category")
+
+    # Call the parse_categorical function with the sample variable
+    categorical_values, levels, n_levels = parse_categorical(x)
+
+    # Perform assertions to check if the function output is as expected
+    expected_categorical_values = np.array([0, 1, 0, 2, 1, 2])
+    expected_levels = pd.Categorical(["A", "B", "C"]).categories
+    expected_n_levels = 3
+
+    assert np.all(categorical_values == expected_categorical_values)
+    assert list(levels) == list(expected_levels)
+    assert n_levels == expected_n_levels
 
 def test_BEST():
     # Creat test data
@@ -65,6 +81,64 @@ def test_BEST_paired():
     assert "nu" in model.named_vars
     assert "likelihood" in model.named_vars
     assert "effect_size" in model.named_vars
+    
+def test_robust_linear_regression():
+    # Generate test data
+    np.random.seed(0)
+    x = np.random.normal(0, 1, 100)
+    y = 2 * x + np.random.normal(0, 1, 100)
+
+    # Call the robust_linear_regression function with test data
+    model, idata = robust_linear_regression(x, y)
+
+    # Perform assertions to check if the function output is as expected
+    assert isinstance(model, pm.Model)
+    assert isinstance(idata, az.data.inference_data.InferenceData)
+    assert "zbeta0" in model.named_vars
+    assert "zbeta1" in model.named_vars
+    assert "sigma" in model.named_vars
+    assert "nu_minus_one" in model.named_vars
+    assert "nu" in model.named_vars
+    assert "nu_log10" in model.named_vars
+    assert "likelihood" in model.named_vars
+    
+def test_hierarchical_regression():
+    # Generate test data
+    np.random.seed(0)
+    x = np.random.normal(0, 1, 100)
+    y = 2 * x + np.random.normal(0, 1, 100)
+    subj = pd.Series(np.random.choice(["A", "B"], 100))
+
+    # Call the robust_linear_regression function with test data
+    model, idata = hierarchical_regression(x, y, subj)
+
+    # Perform assertions to check if the function output is as expected
+    assert isinstance(model, pm.Model)
+    assert isinstance(idata, az.data.inference_data.InferenceData)
+    assert "zbeta0" in model.named_vars
+    assert "zbeta1" in model.named_vars
+    assert "zsigma" in model.named_vars
+    assert "nu" in model.named_vars
+
+def test_hierarchical_bayesian_anova():
+    # Generate test data
+    x = pd.Series(['A', 'B', 'A', 'C', 'B', 'C'])
+    y = np.random.normal(0, 1, 6)
+
+    # Call the hierarchical_bayesian_anova function with test data
+    model, idata = hierarchical_bayesian_anova(x, y)
+
+    # Perform assertions to check if the function output is as expected
+    assert isinstance(model, pm.Model)
+    assert isinstance(idata, az.data.inference_data.InferenceData)
+    assert "sigma_a" in model.named_vars
+    assert "a0" in model.named_vars
+    assert "a" in model.named_vars
+    assert "sigma_y" in model.named_vars
+    assert "likelihood" in model.named_vars
+    assert "m" in model.named_vars
+    assert "b0" in model.named_vars
+    assert "b" in model.named_vars
 
 
 
