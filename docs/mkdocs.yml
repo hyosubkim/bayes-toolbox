@@ -2,9 +2,13 @@ site_name: bayes-toolbox
 site_url: https://hyosubkim.github.io/bayes-toolbox/
 repo_url: https://github.com/hyosubkim/bayes-toolbox
 edit_uri: edit/main/docs/docs/
+
+plugins: 
+    - mkdocstrings
 nav:
     - Home: index.md
     - Getting Started: getting-started.md
+    - API Reference: reference.md
     - Tutorials: tutorials.md
     - Future Plans: future-plans.md
     - How to Contribute: how-to-contribute.md

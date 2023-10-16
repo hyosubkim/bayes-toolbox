@@ -32,9 +32,7 @@ Some of the main libraries used in this project:
 - [Xarray](https://docs.xarray.dev/en/stable/)
 
 ## Testing and Functionality
-The statistical models in `bayes-toolbox` have all been validated against known results (i.e., "ground truth"). Specifically, in the `examples` directory, you will find that each model has been run on the same data used in [DBDA](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). All the results have been compared to those in the textbook, and against the results produced in another Python port of the textbook (https://github.com/JWarmenhoven/DBDA-python). Only subtle numerical discrepancies due to the nature of [MCMC sampling](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), as well as differences between [RStan](https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html) and [PyMC](https://www.pymc.io/welcome.html), have been detected. 
-
-The vast majority of intermediate computations are formally tested with inline `assert` statements (e.g., confirming sum-to-zero constraints in ANOVA-like models). Given the limited number of "pure" functions, there is only a single, small test suite. 
+In addition to formal testing of the functions that make up `bayes-toolbox`, the statistical models have all been validated against known results (i.e., "ground truth"). Specifically, in the `examples` directory, you will find that each model has been run on the same data used in [DBDA](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). All the results have been compared to those in the textbook, and against the results produced in another Python port of the textbook (https://github.com/JWarmenhoven/DBDA-python). Only subtle numerical discrepancies due to the nature of [MCMC sampling](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), as well as differences between [RStan](https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html) and [PyMC](https://www.pymc.io/welcome.html), have been detected. 
 
 
 ---
