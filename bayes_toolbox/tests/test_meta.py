@@ -14,11 +14,14 @@ def test_meta_binary_outcome():
     study = ["Study1", "Study2", "Study3"]  # Example study names
 
     # Call the function
-    model, idata = meta_binary_outcome(z_t_obs, n_t_obs, z_c_obs, n_c_obs, study, n_draws=1000)
+    model, idata = meta_binary_outcome(
+        z_t_obs, n_t_obs, z_c_obs, n_c_obs, study, n_draws=1000
+    )
 
     # Add assertions here to check the validity of the results
     assert isinstance(model, pm.Model)
     assert isinstance(idata, az.InferenceData)
+
 
 def test_meta_normal_outcome_beta_version():
     # Create test data
@@ -27,7 +30,9 @@ def test_meta_normal_outcome_beta_version():
     study = ["Study1", "Study2", "Study3"]  # Example study names
 
     # Call the function
-    model, idata = meta_normal_outcome_beta_version(eff_size, se_eff_size, study, n_draws=1000)
+    model, idata = meta_normal_outcome_beta_version(
+        eff_size, se_eff_size, study, n_draws=1000
+    )
 
     # Add assertions here to check the validity of the results
     assert isinstance(model, pm.Model)
