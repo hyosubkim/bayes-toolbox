@@ -111,16 +111,15 @@ def is_standardized(X, eps=0.0001):
 def BEST(y, group, n_draws=1000):
     """Implementation of John Kruschke's BEST test.
 
-    Estimates parameters related to outcomes of two groups. See:
-        https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf
-        for more details.
+    Estimates parameters related to outcomes of two groups. See: 
+    https://jkkweb.sitehost.iu.edu/articles/Kruschke2013JEPG.pdf for more details.
 
     Args:
         y (ndarray/pandas.Series): The metric outcome variable.
         group (pandas.Series): The grouping variable providing that indexes into y.
         n_draws: Number of random samples to draw from the posterior.
 
-    Returns:
+    Returns: 
         pymc.Model and arviz.InferenceData objects.
     """
 
@@ -189,8 +188,9 @@ def BEST_paired(y1, y2=None, n_draws=1000):
 
     Args:
         y1 (ndarray/Series): Either single sample or difference scores.
-        y2 (ndarray/Series): (Optional) If provided, represents the paired
-          sample (i.e., y2 elements are in same order as y1).
+        y2 (ndarray/Series): (Optional) If provided, represents the paired sample 
+            (i.e., y2 elements are in same order as y1).
+          
     Returns:
         pymc.Model and arviz.InferenceData objects.
     """
@@ -641,7 +641,6 @@ def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
 
     Returns:
         pymc.Model and arviz.InferenceData objects.
-
     """
     # Extract posterior probabilities and stack your chains
     post = az.extract(idata.posterior)
@@ -750,7 +749,6 @@ def oneway_rm_anova_convert_to_sum_to_zero(idata, x1, x_s):
 
     Returns:
         pymc.Model and arviz.InferenceData objects.
-
     """
     # Extract posterior probabilities and stack your chains
     # post = az.extract(idata.posterior)
@@ -892,7 +890,6 @@ def create_masked_array(
     """Creates a masked array with all cell values from the posterior.
 
     Intended for use with bayesian_mixed_model_anova.
-
     """
     # Between-subjects factor
     x_between, levels_x_between, num_levels_x_between = parse_categorical(
@@ -943,7 +940,6 @@ def calc_marginal_means(m_SxBxW):
     """Calculate the marginalized means using the masked array.
 
     Intended for use with bayesian_mixed_model_anova.
-
     """
 
     # Mean for subject S across levels of W, within the level of B
@@ -1018,7 +1014,6 @@ def bayesian_logreg_cat_predictors(X, y, n_draws=1000):
 
     Returns:
         pymc.Model and arviz.InferenceData objects.
-
     """
 
     # Standardize the predictor variable(s)
@@ -1057,7 +1052,6 @@ def bayesian_logreg_subj_intercepts(subj, X, y, n_draws=1000):
 
     Returns:
         pymc.Model and arviz.InferenceData objects.
-
     """
     # Factorize subj IDs and treatment variable
     subj_idx, subj_levels, n_subj = parse_categorical(subj)
