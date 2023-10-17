@@ -4,17 +4,19 @@ repo_url: https://github.com/hyosubkim/bayes-toolbox
 edit_uri: edit/main/docs/docs/
 
 theme:
-    name: "material"
+  name: "material"
 
 plugins: 
-    - mkdocstrings
+- mkdocstrings:
+    default_handler: python
+  
 nav:
-    - Home: index.md
-    - Getting Started: getting-started.md
-    - API Reference: reference.md
-    - Tutorials: tutorials.md
-    - Future Plans: future-plans.md
-    - How to Contribute: how-to-contribute.md
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference: reference.md
+  - Tutorials: tutorials.md
+  - Future Plans: future-plans.md
+  - How to Contribute: how-to-contribute.md
 
 
 
