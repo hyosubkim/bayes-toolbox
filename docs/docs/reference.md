@@ -1,1 +1,4 @@
-::: bayes-toolbox.glm
+# Reference
+
+::: bayes_toolbox.glm
+::: bayes_toolbox.meta

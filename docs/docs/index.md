@@ -2,11 +2,12 @@
 
 [![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204)
 [![status](https://joss.theoj.org/papers/1b7b8068a329b547e28d00da0ad790b2/status.svg)](https://joss.theoj.org/papers/1b7b8068a329b547e28d00da0ad790b2)
+![coverage](coverage.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 `bayes-toolbox` (aka, Bayesian Statistics Toolbox [BST]) is a Python package for running sophisticated Bayesian analyses in a simple, straight forward manner. 
 
-## Statement of Need (i.e., Why is this useful?)
+## Statement of Need 
 
 ### Research
 `bayes-toolbox` provides you with the tools for utilizing and exploring Bayesian statistics in your own research projects right away. By wrapping model definitions of Bayesian generalized linear models into convenient functions, `bayes-toolbox` makes it easy to run Bayesian analyses that are analogous to some of the most commonly used frequentist tests in the behavioral and neural sciences (think t-tests, ANOVAs, regression). Right now, Python users can choose between several packages that allow for one-liners to be called in order to run classical/frequentist tests (e.g., [Pingouin](https://pingouin-stats.org/build/html/index.html#), [SciPy](https://scipy.org/), [pandas](https://pandas.pydata.org/), [statsmodels](https://www.statsmodels.org/stable/index.html)). In contast, for Bayesian statistics there has been [Bambi](https://bambinos.github.io/bambi/), which is excellent, but it does require more advanced knowledge and familiarity with R-brms syntax. Therefore, the goal of `bayes-toolbox` is to fill an important gap in the Python/Bayesian community, by providing an easy-to-use module for less experienced users that makes it as simple to run Bayesian stats as it is to run frequentist stats. As all of the models (tests) are executable with one-liners, they are ideal for use in an open, replicable (and Bayesian) workflow (watch this [PyMCon talk](https://www.youtube.com/watch?v=ElfToZ9EBpM) to learn more). **Example use cases and tests for nearly every model are provided in the [`examples`](https://github.com/hyosubkim/bayes-toolbox/tree/main/examples) directory, so you can see what a sensible Bayesian data analysis pipeline looks like.** (Many of the example notebooks are adaptations of [Jordi Warmenhoven's Python/PyMC3 port](https://github.com/JWarmenhoven/DBDA-python) of John Kruschke's excellent textbook ["Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan (DBDA)"](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0).
@@ -32,7 +33,7 @@ Some of the main libraries used in this project:
 - [Xarray](https://docs.xarray.dev/en/stable/)
 
 ## Testing and Functionality
-In addition to formal testing of the functions that make up `bayes-toolbox`, the statistical models have all been validated against known results (i.e., "ground truth"). Specifically, in the `examples` directory, you will find that each model has been run on the same data used in [DBDA](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). All the results have been compared to those in the textbook, and against the results produced in another Python port of the textbook (https://github.com/JWarmenhoven/DBDA-python). Only subtle numerical discrepancies due to the nature of [MCMC sampling](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), as well as differences between [RStan](https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html) and [PyMC](https://www.pymc.io/welcome.html), have been detected. 
+In addition to thorough formal testing of the functions that make up `bayes-toolbox`, the statistical models have all been validated against known results (i.e., "ground truth"). Specifically, in the `examples` directory, you will find that each model has been run on the same data used in [DBDA](https://sites.google.com/site/doingbayesiandataanalysis/home?authuser=0). All the results have been compared to those in the textbook, and against the results produced in another Python port of the textbook (https://github.com/JWarmenhoven/DBDA-python). Only subtle numerical discrepancies due to the nature of [MCMC sampling](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), as well as differences between [RStan](https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html) and [PyMC](https://www.pymc.io/welcome.html), have been detected. 
 
 
 ---
@@ -45,7 +46,8 @@ Use the links in the navigation bar to the left, the search bar in the upper lef
 [Future Plans](https://hyosubkim.github.io/bayes-toolbox/future-plans/)     
 [How to Contribute](https://hyosubkim.github.io/bayes-toolbox/how-to-contribute/)
 
-## Bayesian models that are currently included and validated (frequentist analogue in parentheses)
+## Bayesian models currently included (frequentist analogue in parentheses)
+- See [API Reference](https://hyosubkim.github.io/bayes-toolbox/reference) for comprehensive list
 - Comparison of two groups *(independent samples t-test)*
 - Comparison of single or paired samples *(paired t-test)*
 - Simple linear regression

@@ -3,6 +3,9 @@ site_url: https://hyosubkim.github.io/bayes-toolbox/
 repo_url: https://github.com/hyosubkim/bayes-toolbox
 edit_uri: edit/main/docs/docs/
 
+theme:
+    name: "material"
+
 plugins: 
     - mkdocstrings
 nav:
@@ -12,7 +15,6 @@ nav:
     - Tutorials: tutorials.md
     - Future Plans: future-plans.md
     - How to Contribute: how-to-contribute.md
-theme: readthedocs
 
 
 

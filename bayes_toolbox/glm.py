@@ -89,7 +89,7 @@ def is_standardized(X, eps=0.0001):
     """Checks to see if variable is standardized (i.e., N(0, 1)).
 
     Args:
-        x: Random variable.
+        X: Random variable.
         eps: Some small value to represent tolerance level.
 
     Returns:
@@ -116,12 +116,12 @@ def BEST(y, group, n_draws=1000):
         for more details.
 
     Args:
-        y (ndarray/Series): The metric outcome variable.
-        group: The grouping variable providing that indexes into y.
+        y (ndarray/pandas.Series): The metric outcome variable.
+        group (pandas.Series): The grouping variable providing that indexes into y.
         n_draws: Number of random samples to draw from the posterior.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     # Convert grouping variable to categorical dtype if it is not already
@@ -192,7 +192,7 @@ def BEST_paired(y1, y2=None, n_draws=1000):
         y2 (ndarray/Series): (Optional) If provided, represents the paired
           sample (i.e., y2 elements are in same order as y1).
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     # Check to see if y2 was entered. If so, then this means the
@@ -240,7 +240,7 @@ def robust_linear_regression(x, y, n_draws=1000):
         n_draws: Number of random samples to draw from the posterior.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     # Standardize both predictor and outcome variables.
@@ -280,9 +280,9 @@ def unstandardize_linreg_parameters(zbeta0, zbeta1, sigma, x, y):
     Args:
         zbeta0 (): Intercept for standardized data.
         zbeta1 (): Slope for standardized data.
-        mu_y (scalar): Mean of outcome variable.
-        sigma_x (scalar): SD of predictor variable.
-        sigma_y (scalar): SD of outcome variable.
+        sigma: SD of standardized data.
+        x: The predictor (independent) variable.
+        y: The outcome (dependent) variable.
 
     Returns:
         ndarrays
@@ -301,12 +301,12 @@ def hierarchical_regression(x, y, subj, n_draws=1000, acceptance_rate=0.9):
     """A multi-level model for estimating group and individual level parameters.
 
     Args:
-        x: Predictor variable.
-        y: Outcome variable.
-        subj: Subj id variable.
+        x (ndarray/pandas.Series): Predictor variable.
+        y (ndarray/pandas.Series): Outcome variable.
+        subj (pandas.Series): Subj id variable.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
     zx, mu_x, sigma_x = standardize(x)
     zy, mu_y, sigma_y = standardize(y)
@@ -355,11 +355,11 @@ def multiple_linear_regression(X, y, n_draws=1000):
     """Perform a Bayesian multiple linear regression.
 
     Args:
-        X (dataframe): Predictor variables are in different columns.
+        X (pandas.DataFrame): Predictor variables are in different columns.
         y (ndarray/Series): The outcome variable.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     # Standardize both predictor and outcome variables.
@@ -397,18 +397,17 @@ def multiple_linear_regression(X, y, n_draws=1000):
 def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, zsigma, X, y):
     """Rescale standardized coefficients to magnitudes on raw scale.
 
-    If the posterior samples come from multiple chains, they should be combined
-    and the zbetas should have dimensionality of (predictors, draws).
+    To be used with multiple_linear_regression. If the posterior samples come from
+    multiple chains, they should be combined and the zbetas should have dimensionality
+    of (predictors, draws).
 
     Args:
         zbeta0: Standardized intercept.
         zbeta: Standardized multiple regression coefficients for predictor
                 variables.
-        mu_X: Mean of predictor variables.
-        mu_y: Mean of outcome variable.
-        sigma: SD of likelihood on standardized scale.
-        sigma_X: SD of predictor variables.
-        sigma_y: SD of outcome variable.
+        zsigma: Standardized standard deviation.
+        X: Predictor matrix.
+        y: Outcome variable.
 
     Returns:
         Standardized coefficients and scale parameter.
@@ -427,7 +426,13 @@ def unstandardize_multiple_linreg_parameters(zbeta0, zbeta, zsigma, X, y):
 
 
 def gamma_shape_rate_from_mode_sd(mode, sd):
-    """Calculate Gamma shape and rate parameters from mode and sd."""
+    """Calculate Gamma shape and rate parameters from mode and sd.
+
+    Args:
+        mode: Mode of distribution.
+        sd: Standard deviation of distribution.
+
+    """
     rate = (mode + np.sqrt(mode**2 + 4 * sd**2)) / (2 * sd**2)
     shape = 1 + mode * rate
 
@@ -442,7 +447,7 @@ def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
         y: The outcome variable.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     mu_y = y.mean()
@@ -489,7 +494,7 @@ def hierarchical_bayesian_ancova(
         sigma_y: The SD of y.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
     x_vals, levels, n_levels = parse_categorical(x)
 
@@ -529,7 +534,7 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9
         sigma_y: The SD of y.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
     x_vals, levels, n_levels = parse_categorical(x)
 
@@ -587,7 +592,7 @@ def bayesian_two_factor_anova(x1, x2, y, n_draws=1000):
         y: The outcome variable.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
     mu_y = y.mean()
     sigma_y = y.std()
@@ -630,12 +635,12 @@ def two_factor_anova_convert_to_sum_to_zero(idata, x1, x2):
     """Returns coefficients that obey sum-to-zero constraint.
 
     Args:
-        idata: InferenceData object.
+        idata: arviz.InferenceData object.
         x1: First categorical predictor variable.
         x2: Second categorical predictor variable.
 
     Returns:
-        Posterior in the form of InferenceData object.
+        pymc.Model and arviz.InferenceData objects.
 
     """
     # Extract posterior probabilities and stack your chains
@@ -700,7 +705,7 @@ def bayesian_oneway_rm_anova(x1, x_s, y, tune=2000, n_draws=1000):
         y: The outcome variable.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
     mu_y = y.mean()
     sigma_y = y.std()
@@ -742,10 +747,9 @@ def oneway_rm_anova_convert_to_sum_to_zero(idata, x1, x_s):
     Args:
         idata: InferenceData object.
         x1: First categorical predictor variable.
-        x2: Second categorical predictor variable.
 
     Returns:
-        Posterior in the form of InferenceData object.
+        pymc.Model and arviz.InferenceData objects.
 
     """
     # Extract posterior probabilities and stack your chains
@@ -801,7 +805,7 @@ def bayesian_mixed_model_anova(
         y: The outcome variable.
 
     Returns:
-        PyMC Model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
     # Statistical model: Split-plot design after Kruschke Ch. 20
     # Between-subjects factor (i.e., group)
@@ -885,7 +889,11 @@ def unpack_posterior_vars(posterior):
 def create_masked_array(
     a0, aB, aW, aBxW, aS, posterior, between_subj_var, within_subj_var, subj_id
 ):
-    """Creates a masked array with all cell values from the posterior."""
+    """Creates a masked array with all cell values from the posterior.
+
+    Intended for use with bayesian_mixed_model_anova.
+
+    """
     # Between-subjects factor
     x_between, levels_x_between, num_levels_x_between = parse_categorical(
         between_subj_var
@@ -932,7 +940,11 @@ def create_masked_array(
 
 
 def calc_marginal_means(m_SxBxW):
-    """Calculate the marginalized means using the masked array."""
+    """Calculate the marginalized means using the masked array.
+
+    Intended for use with bayesian_mixed_model_anova.
+
+    """
 
     # Mean for subject S across levels of W, within the level of B
     m_S = m_SxBxW.mean(dim="within_subj")
@@ -998,6 +1010,17 @@ def convert_to_sum_to_zero(idata, between_subj_var, within_subj_var, subj_id):
 
 
 def bayesian_logreg_cat_predictors(X, y, n_draws=1000):
+    """Performs a Bayesian logistic regression using categorical predictors.
+
+    Args:
+        X: Predictor matrix.
+        y: The outcome variable.
+
+    Returns:
+        pymc.Model and arviz.InferenceData objects.
+
+    """
+
     # Standardize the predictor variable(s)
     zX, mu_X, sigma_X = standardize(X)
 
@@ -1024,6 +1047,18 @@ def bayesian_logreg_cat_predictors(X, y, n_draws=1000):
 
 
 def bayesian_logreg_subj_intercepts(subj, X, y, n_draws=1000):
+    """Performs a Bayesian logistic regression using categorical predictors and fitting
+    separate intercepts for each subject.
+
+    Args:
+        subj: Subject IDs.
+        X: Predictor matrix.
+        y: The outcome variable.
+
+    Returns:
+        pymc.Model and arviz.InferenceData objects.
+
+    """
     # Factorize subj IDs and treatment variable
     subj_idx, subj_levels, n_subj = parse_categorical(subj)
     treatment_idx, treatment_levels, n_treatment = parse_categorical(X)

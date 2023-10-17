@@ -45,7 +45,7 @@ def meta_binary_outcome(z_t_obs, n_t_obs, z_c_obs, n_c_obs, study, n_draws=1000)
         study: list of studies included in analysis
 
     Returns:
-        PyMC model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     with pm.Model(coords={"study": study}) as model:
@@ -92,7 +92,7 @@ def meta_normal_outcome_beta_version(eff_size, se_eff_size, study, n_draws=1000)
         study: List of studies included in analysis
 
     Returns:
-        PyMC model and InferenceData objects.
+        pymc.Model and arviz.InferenceData objects.
     """
 
     with pm.Model(coords={"study": study}) as model:
