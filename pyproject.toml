@@ -36,7 +36,8 @@ keywords = [
     "bayesian-statistics",
     "statistics"
 ]
-
+[tools.setuptools]
+packages = ["bayes_toolbox"]
 [tool.setuptools_scm]
 write_to = "bayes_toolbox/_version.py"
 
