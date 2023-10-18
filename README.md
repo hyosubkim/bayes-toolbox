@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/553182204.svg)](https://zenodo.org/badge/latestdoi/553182204) 
 [![status](https://joss.theoj.org/papers/1b7b8068a329b547e28d00da0ad790b2/status.svg)](https://joss.theoj.org/papers/1b7b8068a329b547e28d00da0ad790b2)
-![coverage](bayes-toolbox/bayes_toolbox/tests/coverage.svg)
+![coverage](bayes_toolbox/tests/coverage.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # bayes-toolbox  
