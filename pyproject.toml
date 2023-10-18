@@ -8,8 +8,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayes-toolbox"
-# version = "0.1.0"
-dynamic = ["version"]
+version = "0.1.1"
+# dynamic = ["version"]
 authors = [
   { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
 ]
@@ -36,8 +36,9 @@ keywords = [
     "bayesian-statistics",
     "statistics"
 ]
-[tools.setuptools]
-packages = ["bayes_toolbox"]
+[tool.setuptools.packages.find]
+where = ["bayes_toolbox"]
+
 [tool.setuptools_scm]
 write_to = "bayes_toolbox/_version.py"
 
