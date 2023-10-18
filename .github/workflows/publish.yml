@@ -1,0 +1,39 @@
+# Provide a name for the workflow
+name: Upload Python Package
+
+# Tell GitHub when to run the action
+# This will run every time a new release is published
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    # Run the workflow on the latest Ubuntu version
+    runs-on: ubuntu-latest
+    steps:
+      # This will checkout our GitHub project and enter
+      # the directory
+      - uses: actions/checkout@v3
+      # This will set up a Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      # Here we update pip to the latest version and
+      # install 'build'. We won't need 'twine' here.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+      # Here we run build to create a wheel and a
+      # .tar.gz source distribution.
+      - name: Build package
+        run: python -m build --sdist --wheel
+      # Finally, we use a pre-defined action to publish
+      # our package in place of twine.
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
