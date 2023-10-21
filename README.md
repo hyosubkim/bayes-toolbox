@@ -36,11 +36,11 @@ If you use `bayes-toolbox` in your work, please cite using one of the following:
 ```
 @software{Kim_bayes-toolbox_2023,
 author = {Kim, Hyosub E.},
-doi = {10.5281/zenodo.7339667},
-month = apr,
+doi = {10.5281/zenodo.7849408},
+month = oct,
 title = {{bayes-toolbox}},
 url = {https://github.com/hyosubkim/bayes-toolbox},
-version = {0.0.1},
+version = {0.1.1},
 year = {2023}
 }
 ```
