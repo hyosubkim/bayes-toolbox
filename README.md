@@ -27,7 +27,7 @@ See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/ge
 
 ## Citing bayes-toolbox
 
-If you use `bayes-toolbox` in your work, please cite using one of the following:
+If you use `bayes-toolbox` in your work, please cite our Journal of Open Source Software (JOSS) article:
 
 ***APA format:***   
 Kim, H. E. (2023). bayes-toolbox: A Python package for Bayesian statistics. Journal of Open Source Software, 8(90), 5526. https://doi.org/10.21105/joss.05526
