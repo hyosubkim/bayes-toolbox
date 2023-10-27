@@ -68,7 +68,7 @@ For a more weapons-grade Bayesian statistical modeling interface, check out:
 While `Bambi` requires model formulas, `bayes-toolbox` instead requires calling the function associated with a particular test. 
 
 ## Citing BST
-If you use BST and would like to cite, please use one of the following:
+If you use `bayes-toolbox` in your work, please cite our Journal of Open Source Software (JOSS) article: 
 
 ***APA format:***    
 Kim, H. E. (2023). bayes-toolbox: A Python package for Bayesian statistics. Journal of Open Source Software, 8(90), 5526. https://doi.org/10.21105/joss.05526
