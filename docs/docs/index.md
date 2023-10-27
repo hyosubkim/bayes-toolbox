@@ -70,8 +70,8 @@ While `Bambi` requires model formulas, `bayes-toolbox` instead requires calling 
 ## Citing BST
 If you use BST and would like to cite, please use one of the following:
 
-***APA format:***  
-    Kim, H. E. (2023). bayes-toolbox (Version 0.0.1) [Computer software]. https://doi.org/10.5281/zenodo.7339667
+***APA format:***    
+Kim, H. E. (2023). bayes-toolbox: A Python package for Bayesian statistics. Journal of Open Source Software, 8(90), 5526. https://doi.org/10.21105/joss.05526
     
 ***BibTeX format:***
 ```
