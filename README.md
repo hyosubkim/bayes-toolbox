@@ -30,17 +30,20 @@ See the [installation instructions](https://hyosubkim.github.io/bayes-toolbox/ge
 If you use `bayes-toolbox` in your work, please cite using one of the following:
 
 ***APA format:***
-- Kim, H. E. (2023). bayes-toolbox (Version 0.1.1) [Computer software]. https://doi.org/10.5281/zenodo.7849408
+Kim, H. E. (2023). bayes-toolbox: A Python package for Bayesian statistics. Journal of Open Source Software, 8(90), 5526. https://doi.org/10.21105/joss.05526
 
 ***BibTeX format:***
 ```
-@software{Kim_bayes-toolbox_2023,
+@article{Kim_bayes-toolbox_A_Python_2023,
 author = {Kim, Hyosub E.},
-doi = {10.5281/zenodo.7849408},
+doi = {10.21105/joss.05526},
+journal = {Journal of Open Source Software},
 month = oct,
-title = {{bayes-toolbox}},
-url = {https://github.com/hyosubkim/bayes-toolbox},
-version = {0.1.1},
+number = {90},
+pages = {5526},
+title = {{bayes-toolbox: A Python package for Bayesian statistics}},
+url = {https://joss.theoj.org/papers/10.21105/joss.05526},
+volume = {8},
 year = {2023}
 }
 ```
