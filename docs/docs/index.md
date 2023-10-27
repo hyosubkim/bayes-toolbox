@@ -75,13 +75,16 @@ Kim, H. E. (2023). bayes-toolbox: A Python package for Bayesian statistics. Jour
     
 ***BibTeX format:***
 ```
-@software{Kim_bayes-toolbox_2023,
+@article{Kim_bayes-toolbox_A_Python_2023,
 author = {Kim, Hyosub E.},
-doi = {10.5281/zenodo.7339667},
-month = apr,
-title = {{bayes-toolbox}},
-url = {https://github.com/hyosubkim/bayes-toolbox},
-version = {0.0.1},
+doi = {10.21105/joss.05526},
+journal = {Journal of Open Source Software},
+month = oct,
+number = {90},
+pages = {5526},
+title = {{bayes-toolbox: A Python package for Bayesian statistics}},
+url = {https://joss.theoj.org/papers/10.21105/joss.05526},
+volume = {8},
 year = {2023}
 }
 ```
