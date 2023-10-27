@@ -1,11 +1,27 @@
-cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+cff-version: "1.2.0"
 authors:
-- family-names: "Kim"
-  given-names: "Hyosub E."
+- family-names: Kim
+  given-names: Hyosub E.
   orcid: "https://orcid.org/0000-0003-0109-593X"
-title: "bayes-toolbox"
-version: 0.1.1
-doi: 10.5281/zenodo.7849408 
-date-released: 2023-10-18
-url: "https://github.com/hyosubkim/bayes-toolbox"
+doi: 10.5281/zenodo.7849408
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Kim
+    given-names: Hyosub E.
+    orcid: "https://orcid.org/0000-0003-0109-593X"
+  date-published: 2023-10-27
+  doi: 10.21105/joss.05526
+  issn: 2475-9066
+  issue: 90
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 5526
+  title: "bayes-toolbox: A Python package for Bayesian statistics"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.05526"
+  volume: 8
+title: "bayes-toolbox: A Python package for Bayesian statistics"
+
