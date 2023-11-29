@@ -34,6 +34,11 @@ keywords = [
     "statistics"
 ]
 
+[tool.setuptools]
+# package-dir = {"" = "bayes_toolbox"}
+packages = ["bayes_toolbox"]
+
+
 [project.urls]
 "Homepage" = "https://github.com/hyosubkim/bayes-toolbox"
 "Bug Tracker" = "https://github.com/hyosubkim/bayes-toolbox/issues"
