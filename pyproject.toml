@@ -2,14 +2,14 @@
 requires = [
     "setuptools>=65",
     "setuptools_scm[toml]",
-    "wheel",
+    "wheel >= 0.38",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayes-toolbox"
-version = "0.1.1"
-# dynamic = ["version"]
+# version = "0.1.1"
+dynamic = ["version"]
 authors = [
   { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
 ]
