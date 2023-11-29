@@ -1,15 +1,13 @@
 [build-system]
 requires = [
-    "setuptools>=65",
-    "setuptools_scm[toml]",
+    "setuptools>=61.0",
     "wheel >= 0.38",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayes-toolbox"
-# version = "0.1.1"
-dynamic = ["version"]
+version = "0.1.3"
 authors = [
   { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
 ]
@@ -27,8 +25,7 @@ dependencies = [
     "numpy~=1.23.4",
     "pandas~=1.5.1",
     "pymc~=4.3.0",
-    "setuptools~=65.5.1",
-    'importlib_metadata; python_version < "3.8"'
+    "setuptools~=65.5.1"
 ]
 keywords = [
     "probabilistic-programming", 
@@ -36,11 +33,6 @@ keywords = [
     "bayesian-statistics",
     "statistics"
 ]
-[tool.setuptools.packages.find]
-where = ["bayes_toolbox"]
-
-[tool.setuptools_scm]
-write_to = "bayes_toolbox/_version.py"
 
 [project.urls]
 "Homepage" = "https://github.com/hyosubkim/bayes-toolbox"
