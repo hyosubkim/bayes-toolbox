@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://hyosubkim.github.io/bayes-toolbox/tutorials/">
+        <link rel="canonical" href="https://hyosubkim.github.io/bayes-toolbox/faq/">
       
       
-        <link rel="prev" href="../reference/">
+        <link rel="prev" href="../tutorials/">
       
       
-        <link rel="next" href="../faq/">
+        <link rel="next" href="../future-plans/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Tutorials - bayes-toolbox</title>
+        <title>FAQ - bayes-toolbox</title>
       
     
     
@@ -69,7 +69,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#bayes-toolbox-tutorials" class="md-skip">
+        <a href="#frequently-asked-questions" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +105,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tutorials
+              FAQ
             
           </span>
         </div>
@@ -236,6 +236,25 @@
       
   
   
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -247,27 +266,18 @@
         
       
       
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
   
   <span class="md-ellipsis">
-    Tutorials
+    FAQ
   </span>
   
 
-      </a>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -276,6 +286,46 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    General
+  </a>
+  
+    <nav class="md-nav" aria-label="General">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-come-bayes-toolbox-is-not-installing-on-my-computer" class="md-nav__link">
+    How come bayes-toolbox is not installing on my computer?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -338,6 +388,34 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    General
+  </a>
+  
+    <nav class="md-nav" aria-label="General">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-come-bayes-toolbox-is-not-installing-on-my-computer" class="md-nav__link">
+    How come bayes-toolbox is not installing on my computer?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -354,10 +432,13 @@
   
 
 
-<h1 id="bayes-toolbox-tutorials">bayes-toolbox tutorials</h1>
-<p><strong><em>Update: Hyosub's recorded <a href="https://www.youtube.com/watch?v=ElfToZ9EBpM">PyMCon talk</a> is now up on YouTube. You can find links to the talk and the tutorial notebook <a href="https://discourse.pymc.io/t/pymcon-web-series-05-the-bayesian-statistics-toolbox-april-17th-2023-hyosub-kim/11845">here</a>. A Jupyter version of the tutorial is also available in the <a href="https://github.com/hyosubkim/bayes-toolbox/tree/main/examples"><code>examples</code></a> directory of the bayes-toolbox repository.</em></strong></p>
-<p>The <a href="https://github.com/hyosubkim/bayes-toolbox/tree/main/examples">examples</a> page has many other great examples of using <code>bayes-toolbox</code>.</p>
-<p>Much of the data and images are from the website for John K. Kruschke's textbook <a href="https://sites.google.com/site/doingbayesiandataanalysis/">Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan</a>. The notebooks are a combination of adaptations of Jordi Warmenhoven's excellent <a href="https://github.com/JWarmenhoven/DBDA-python">PyMC3 port of the textbook</a>, edited materials put out by the PyMC developers, and original material. They are meant as example use cases that show you how to use <code>bayes-toolbox</code> and take advantage of some of the new functionality afforded since the release of <a href="https://www.pymc.io/welcome.html">PyMC 4.0</a> with ArviZ.   </p>
+<h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
+<h2 id="general">General</h2>
+<hr />
+<h3 id="how-come-bayes-toolbox-is-not-installing-on-my-computer">How come <code>bayes-toolbox</code> is not installing on my computer?</h3>
+<p>First, make sure you've followed all of the instructions on the <a href="https://hyosubkim.github.io/bayes-toolbox/getting-started/">Getting Started</a> page, including the instructions on creating a virtual environment with the necessary dependencies. </p>
+<p>Note that as of December 2023, you cannot <code>pip install bayes_toolbox</code> with Python 3.12 or above. You can downgrade to Python 3.11 or, better yet, follow the <a href="https://hyosubkim.github.io/bayes-toolbox/getting-started/">Getting Started</a> instructions and install the dependencies using the <em>environment.yml</em> file provided with <code>bayes-toolbox</code>.  The issue with pip and Python 3.12 is not specific to <code>bayes-toolbox</code>&mdash;you can read more about it <a href="https://stackoverflow.com/questions/77364550/attributeerror-module-pkgutil-has-no-attribute-impimporter-did-you-mean">here</a>.</p>
+<p>If you continue to have problems with installation, please open a <a href="https://github.com/hyosubkim/bayes-toolbox/issues">GitHub Issue</a>.</p>
 
 
 

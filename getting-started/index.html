@@ -277,25 +277,19 @@
     Dependencies
   </a>
   
-    <nav class="md-nav" aria-label="Dependencies">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#virtual-environment" class="md-nav__link">
     Virtual environment
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#helpful-hints" class="md-nav__link">
-    Helpful hints
+      
+        <li class="md-nav__item">
+  <a href="#accessing-the-correct-kernel-from-jupyterlab" class="md-nav__link">
+    Accessing the correct kernel from JupyterLab
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -351,6 +345,25 @@
   
   <span class="md-ellipsis">
     Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
   </span>
   
 
@@ -455,25 +468,19 @@
     Dependencies
   </a>
   
-    <nav class="md-nav" aria-label="Dependencies">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#virtual-environment" class="md-nav__link">
     Virtual environment
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#helpful-hints" class="md-nav__link">
-    Helpful hints
+      
+        <li class="md-nav__item">
+  <a href="#accessing-the-correct-kernel-from-jupyterlab" class="md-nav__link">
+    Accessing the correct kernel from JupyterLab
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -529,14 +536,14 @@
 - numpy<br />
 - pandas<br />
 - pymc  </p>
-<h3 id="virtual-environment">Virtual environment</h3>
+<h2 id="virtual-environment">Virtual environment</h2>
 <p>You can create a virtual environment with all of the necessary dependencies. If you've cloned the <code>bayes-toolbox</code> repository, make sure you're in the root directory of the cloned repository (i.e., <code>bayes-toolbox</code>) and type the following conda command in the Terminal (<a href="https://www.anaconda.com/">Anaconda</a> is strongly recommended for installing Python and the conda utility on your computer):</p>
 <pre><code>conda env create --name bayes_toolbox --file environment.yml
 </code></pre>
 <p>Instead of <code>bayes_toolbox</code>, you may wish to give your environment a different name. </p>
 <p>If you're not using MacOSX and want to replicate this environment, read the "Export your environment" section of this <a href="https://goodresearch.dev/setup.html">page</a>. </p>
 <p>After cloning and installing <code>bayes-toolbox</code> locally, you can access it from any directory. </p>
-<h3 id="helpful-hints">Helpful hints</h3>
+<h2 id="accessing-the-correct-kernel-from-jupyterlab">Accessing the correct kernel from JupyterLab</h2>
 <p>If you've created the <code>bayes_toolbox</code> virtual environment and want to access the correct kernel from a Jupyter notebook, you must manually add the kernel for your new virtual environment "bayes_toolbox" (or whatever you named it). To do so, you first need to install <a href="https://github.com/ipython/ipykernel">ipykernel</a>:</p>
 <pre><code>pip install --user ipykernel
 </code></pre>
