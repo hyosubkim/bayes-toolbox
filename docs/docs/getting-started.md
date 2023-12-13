@@ -28,7 +28,7 @@ python3 -m pip install -e .
 - pymc  
 
 
-### Virtual environment
+## Virtual environment
 You can create a virtual environment with all of the necessary dependencies. If you've cloned the `bayes-toolbox` repository, make sure you're in the root directory of the cloned repository (i.e., `bayes-toolbox`) and type the following conda command in the Terminal ([Anaconda](https://www.anaconda.com/) is strongly recommended for installing Python and the conda utility on your computer):
 ```
 conda env create --name bayes_toolbox --file environment.yml
@@ -39,7 +39,7 @@ If you're not using MacOSX and want to replicate this environment, read the "Exp
 
 After cloning and installing `bayes-toolbox` locally, you can access it from any directory. 
 
-### Helpful hints
+## Accessing the correct kernel from JupyterLab
 If you've created the `bayes_toolbox` virtual environment and want to access the correct kernel from a Jupyter notebook, you must manually add the kernel for your new virtual environment "bayes_toolbox" (or whatever you named it). To do so, you first need to install [ipykernel](https://github.com/ipython/ipykernel):
 ```
 pip install --user ipykernel
