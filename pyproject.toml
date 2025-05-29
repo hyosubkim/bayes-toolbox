@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayes-toolbox"
-version = "0.1.3"
+version = "0.1.4"
 authors = [
   { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
 ]
@@ -22,10 +22,10 @@ classifiers = [
 dependencies = [
     "aesara~=2.8.7",
     "arviz~=0.13.0",
-    "numpy~=1.23.4",
+    "numpy~=1.26.4",
     "pandas~=1.5.1",
     "pymc~=4.3.0",
-    "setuptools~=65.5.1"
+    "setuptools~=78.1.1"
 ]
 keywords = [
     "probabilistic-programming", 
