@@ -14,7 +14,7 @@ jobs:
     steps:
       # This will checkout our GitHub project and enter
       # the directory
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # This will set up a Python environment
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -33,7 +33,7 @@ jobs:
       # Finally, we use a pre-defined action to publish
       # our package in place of twine.
       - name: Publish package
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@release/v4
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
