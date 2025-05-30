@@ -1,7 +1,7 @@
 # Provide a name for the workflow
 name: Upload Python Package
 
-# Tell GitHub when to run the action
+# Tell GitHub when to run the action 
 # This will run every time a new release is published
 on:
   release:
