@@ -171,7 +171,7 @@ dependencies:
   - openjpeg=2.5.0=h5d0d7b0_1
   - openssl=3.0.11=hca72f7f_2
   - packaging=23.1=py311hecd8cb5_0
-  - pandas=1.5.1=py311hd84f3f5_1
+  - pandas=2.2.3=py311hd84f3f5_1
   - pandoc=2.19.2=h694c41f_1
   - pandocfilters=1.5.0=pyhd8ed1ab_0
   - pango=1.50.11=h7fca291_0
