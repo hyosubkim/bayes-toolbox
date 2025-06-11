@@ -27,7 +27,7 @@
 A collection of Bayesian statistical models and associated utility functions.
 """
 
-import aesara.tensor as at
+import pytensor.tensor as pt
 import arviz as az
 import numpy as np
 import numpy.ma as ma

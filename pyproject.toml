@@ -24,7 +24,7 @@ dependencies = [
     "arviz~=0.13.0",
     "numpy~=1.26.4",
     "pandas~=2.2.3",
-    "pymc~=4.3.0",
+    "pymc~=5.23.0",
     "setuptools~=78.1.1"
 ]
 keywords = [

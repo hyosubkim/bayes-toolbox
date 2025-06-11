@@ -192,8 +192,8 @@ dependencies:
   - ptyprocess=0.7.0=pyhd3deb0d_0
   - pure_eval=0.2.2=pyhd8ed1ab_0
   - pycparser=2.21=pyhd8ed1ab_0
-  - pymc=4.3.0=hd8ed1ab_0
-  - pymc-base=4.3.0=pyhd8ed1ab_0
+  - pymc=5.23.0=hd8ed1ab_0
+  - pymc-base=5.23.0=pyhd8ed1ab_0
   - pyopenssl=22.1.0=pyhd8ed1ab_0
   - pyparsing=3.0.9=pyhd8ed1ab_0
   - pyrsistent=0.19.2=py311h5547dcb_0
