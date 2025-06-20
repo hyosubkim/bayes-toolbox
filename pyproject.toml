@@ -24,7 +24,7 @@ dependencies = [
     "numpy~=2.3.0",
     "pandas~=2.2.3",
     "pymc~=5.23.0",
-    "pytensor~=2.31.3"
+    "pytensor~=2.31.3",
     "setuptools~=78.1.1"
 ]
 keywords = [
