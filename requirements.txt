@@ -1,6 +1,6 @@
-aesara==2.8.7
-arviz==0.13.0
-numpy==1.26.4
+arviz==0.21.0
+numpy==2.3.0
 pandas==2.2.3
-pymc==4.3.0
+pymc==5.23.0
+pytensor==2.31.3
 setuptools==78.1.1
