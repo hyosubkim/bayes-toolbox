@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=78.1",
+    "setuptools>=78.1.1",
     "wheel >= 0.38",
 ]
 build-backend = "setuptools.build_meta"
@@ -13,18 +13,18 @@ authors = [
 ]
 description = "A package for performing Bayesian analyses."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "aesara~=2.8.7",
-    "arviz~=0.13.0",
-    "numpy~=1.26.4",
+    "arviz~=0.21.0",
+    "numpy~=2.3.0",
     "pandas~=2.2.3",
-    "pymc~=4.3.0",
+    "pymc~=5.23.0",
+    "pytensor~=2.31.3"
     "setuptools~=78.1.1"
 ]
 keywords = [
