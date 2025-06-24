@@ -24,12 +24,13 @@
 A collection of Bayesian statistical models and associated utility functions.
 """
 
-import aesara.tensor as at
 import arviz as az
 import numpy as np
 import numpy.ma as ma
 import pandas as pd
 import pymc as pm
+import pytensor
+import pytensor.tensor as pt
 
 
 def meta_binary_outcome(z_t_obs, n_t_obs, z_c_obs, n_c_obs, study, n_draws=1000):
