@@ -470,7 +470,7 @@ def hierarchical_bayesian_anova(x, y, n_draws=1000, acceptance_rate=0.9):
 
         # Convert a0, a to sum-to-zero b0, b
         m = pm.Deterministic("m", a0 + a)
-        b0 = pm.Deterministic("b0", at.mean(m))
+        b0 = pm.Deterministic("b0", pt.mean(m))
         b = pm.Deterministic("b", m - b0)
 
         idata = pm.sample(draws=n_draws, target_accept=acceptance_rate)
@@ -516,8 +516,8 @@ def hierarchical_bayesian_ancova(
         likelihood = pm.Normal("likelihood", mu=mu, sigma=sigma_y, observed=y)
 
         # Convert a0, a to sum-to-zero b0, b
-        b0 = pm.Deterministic("b0", a0 + at.mean(a) + a_met * (-mu_x_met))
-        b = pm.Deterministic("b", a - at.mean(a))
+        b0 = pm.Deterministic("b0", a0 +pt.mean(a) + a_met * (-mu_x_met))
+        b = pm.Deterministic("b", a -pt.mean(a))
 
         # Sample from the posterior
         idata = pm.sample(draws=n_draws)
@@ -570,7 +570,7 @@ def robust_bayesian_anova(x, y, mu_y, sigma_y, n_draws=1000, acceptance_rate=0.9
 
         # Convert a0, a to sum-to-zero b0, b
         m = pm.Deterministic("m", a0 + a)
-        b0 = pm.Deterministic("b0", at.mean(m))
+        b0 = pm.Deterministic("b0",pt.mean(m))
         b = pm.Deterministic("b", m - b0)
 
         # Sample from the posterior. Initialization argument is necessary
