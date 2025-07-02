@@ -6,6 +6,7 @@ dependencies:
   - numpy==2.3.0
   - pandas==2.2.3
   - scipy==1.15.3
+  - seaborn==0.13.2
   - arviz==0.21.0
   - pytensor==2.31.3
   - pymc==5.23.0

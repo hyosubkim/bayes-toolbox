@@ -21,11 +21,11 @@ python3 -m pip install -e .
 
 ## Dependencies
 `bayes_toolbox` has the following dependencies (all of which should be automatically imported with a pip installation):  
-- aesara  
 - arviz  
 - numpy  
 - pandas  
 - pymc  
+- pytensor
 
 
 ## Virtual environment
