@@ -19,3 +19,4 @@ dependencies:
   - pip==25.1
   - pip:
       - bayes-toolbox
+      - watermark

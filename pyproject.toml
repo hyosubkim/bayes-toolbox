@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayes-toolbox"
-version = "0.1.5"
+version = "0.1.6"
 authors = [
   { name="Hyosub Kim", email="hyosubkim1@gmail.com" },
 ]
